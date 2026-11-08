@@ -641,8 +641,8 @@ function openDetail(tk){
   const pb=$('d-pct');
   const byDate=new Map();tr.forEach(t=>byDate.set(d2iso(t.d),t));
   const sigIso=row&&row.sig?d2iso(S.lastDate):null;
-  const setMarks=()=>{const m=tr.map(t=>({time:d2iso(t.d),position:S.side==='c'?'belowBar':'aboveBar',color:t.r>0?up:dn,shape:S.side==='c'?'arrowUp':'arrowDown',size:0.8,text:showPct?pctS(t.r):''}));
-    if(sigIso)m.push({time:sigIso,position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',size:0.9,text:showPct?'análise':''});
+  const setMarks=()=>{const m=tr.map(t=>({time:d2iso(t.d),position:S.side==='c'?'belowBar':'aboveBar',color:t.r>0?up:dn,shape:S.side==='c'?'arrowUp':'arrowDown',size:0.55,text:showPct?pctS(t.r):''}));
+    if(sigIso)m.push({time:sigIso,position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',size:0.6,text:showPct?'análise':''});
     m.sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);ser.setMarkers(m);
     pb.setAttribute('aria-pressed',showPct);pb.textContent=showPct?'Ocultar % do gráfico':'Mostrar % no gráfico'};
   setMarks();
