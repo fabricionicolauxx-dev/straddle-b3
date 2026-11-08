@@ -97,14 +97,17 @@ select option{background:var(--panel-2);color:var(--ink)}
 #rule-explain{border-left:2px solid var(--accent);padding:2px 0 2px 12px;color:var(--ink-2);font-size:13px}
 
 /* regras */
-.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.rules{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:980px){.rules{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .rule{background:var(--sunk);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px;display:grid;gap:8px;align-content:start;transition:border-color .18s}
 .rule:focus-within{border-color:var(--accent-line)}
 .rule .flabel{display:flex;justify-content:space-between;gap:6px}
 .rule input{width:100%;background:var(--panel);font-size:15px}
 
 /* números */
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .tile{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 18px;display:grid;gap:6px;position:relative;overflow:hidden}
 .tile .v{font-family:var(--f-mono);font-size:32px;font-weight:500;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tile.ok{border-color:var(--accent-line)}
@@ -283,6 +286,7 @@ details[open] summary::before{content:"–"}
   <section class="panel signals" aria-label="Sinais no último pregão">
     <div class="panel-head" style="margin-bottom:0"><h2 id="sig-title">Sinais no último pregão</h2><span class="hint">Ações que bateram a variação no pregão mais recente dos dados. Borda verde: passa nas suas regras.</span></div>
     <div class="sig-list" id="sig-list"></div>
+    <div><button type="button" id="sig-more" hidden>Ver todos</button></div>
   </section>
 
   <section style="display:grid;gap:10px" aria-label="Tabela de estatísticas">
@@ -539,7 +543,9 @@ function render(){
   const ld=S.lastDate?d2br(S.lastDate):'–';
   $('k-last-label').textContent='Sinais em '+ld;$('hdr-last').textContent=ld;
   $('sig-title').textContent=`Sinais no último pregão (${ld})`;
-  $('sig-list').innerHTML=sigs.length?sigs.map(r=>`<button type="button" class="sig ${r.ok?'ok':''}" data-t="${r.t}"><span class="t">${r.t} <span class="${cls(r.sig.v)}">${pctS(r.sig.v)}</span></span><span class="m">${r.n} trades · acerto ${pct(r.rate)} · ganho méd. ${pct(r.avg)}${r.ok?' · <b class="pos">passa nas regras</b>':''}</span></button>`).join('')
+  const SIGMAX=12;const shown=S.allSigs?sigs:sigs.slice(0,SIGMAX);
+  $('sig-more').hidden=sigs.length<=SIGMAX;$('sig-more').textContent=S.allSigs?'Mostrar menos':'Ver todos os '+sigs.length+' sinais';
+  $('sig-list').innerHTML=sigs.length?shown.map(r=>`<button type="button" class="sig ${r.ok?'ok':''}" data-t="${r.t}"><span class="t">${r.t} <span class="${cls(r.sig.v)}">${pctS(r.sig.v)}</span></span><span class="m">${r.n} trades · acerto ${pct(r.rate)} · ganho méd. ${pct(r.avg)}${r.ok?' · <b class="pos">passa nas regras</b>':''}</span></button>`).join('')
     :`<span class="hint">Nenhuma ação ${S.side==='c'?'caiu':'subiu'} ${nf2.format(S.varPct)}% ou mais no último pregão.</span>`;
   $('sig-list').querySelectorAll('.sig').forEach(b=>b.onclick=()=>openDetail(b.dataset.t));
   // fonte
@@ -551,7 +557,7 @@ function render(){
   $('rule-explain').textContent=`Regra atual: quando a ação ${S.side==='c'?'cai':'sobe'} ${nf2.format(S.varPct)}% ou mais num pregão, ${S.side==='c'?'compra':'vende a descoberto'} no fechamento e ${modeTxt}${S.cost>0?`, descontando ${nf2.format(S.cost)}% de custo`:''}.`;
 }
 function renderChips(){
-  $('chips').innerHTML=LEVELS.map(v=>`<button type="button" class="chip" aria-pressed="${Math.abs(v-S.varPct)<1e-9}" data-v="${v}">${nf2.format(v).replace(/,?0+$/,m=>m===',00'?',0':m)}%</button>`).join('');
+  $('chips').innerHTML=LEVELS.map(v=>`<button type="button" class="chip" aria-pressed="${Math.abs(v-S.varPct)<1e-9}" data-v="${v}">${v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</button>`).join('');
   $('chips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{S.varPct=+c.dataset.v;$('f-var').value=S.varPct;update()});
 }
 function syncInputs(){
@@ -677,6 +683,7 @@ async function loadAuto(manual){
   }finally{$('btn-refresh').disabled=false}
 }
 $('btn-refresh').onclick=()=>loadAuto(true);
+$('sig-more').onclick=()=>{S.allSigs=!S.allSigs;render()};
 S.source='demo';loadAuto(false);
 })();
 </script>
