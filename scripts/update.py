@@ -135,6 +135,10 @@ def main():
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(out, f, separators=(",", ":"))
+    meta = {"updated": out["updated"], "last": last, "acoes": len(tickers),
+            "pregoes": sum(len(v[0]) for v in tickers.values())}
+    with open(os.path.join(os.path.dirname(args.out) or ".", "meta.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f)
     size = os.path.getsize(args.out) / 1e6
     print(f"OK: {len(tickers)} ações, último pregão {last}, arquivo {size:.1f} MB")
 
