@@ -194,7 +194,19 @@ details[open] summary::before{content:"–"}
 .sheet{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);width:min(1080px,100%);padding:20px;display:grid;gap:16px;min-width:0;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 .sheet header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line-soft);padding-bottom:14px}
 #d-title{font-family:var(--f-mono);font-weight:500;letter-spacing:.02em}
-#chart{height:360px;border:1px solid var(--line-soft);border-radius:var(--r);background:var(--sunk);overflow:hidden}
+#chart{position:relative;height:360px;border:1px solid var(--line-soft);border-radius:var(--r);background:var(--sunk);overflow:hidden}
+.chart-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:8px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
+.chart-legend i{font-style:normal;font-weight:600}
+.chart-legend .g{color:var(--up)}.chart-legend .r{color:var(--down)}.chart-legend .a{color:var(--accent)}
+#d-pct{padding:7px 12px;font-size:10.5px}
+#d-pct[aria-pressed=true]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.ctip{position:absolute;z-index:5;pointer-events:none;min-width:190px;background:var(--panel-2);border:1px solid var(--line);border-left:2px solid var(--muted);border-radius:var(--r);padding:9px 11px;font-size:12px;line-height:1.5;color:var(--ink-2);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.ctip.pos{border-left-color:var(--up)}.ctip.neg{border-left-color:var(--down)}.ctip.ana{border-left-color:var(--accent)}
+.ctip b{display:block;font-family:var(--f-mono);font-weight:500;color:var(--ink);margin-bottom:2px}
+.ctip b.pos{color:var(--up)}.ctip b.neg{color:var(--down)}
+.ctip .row{display:flex;justify-content:space-between;gap:14px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+#d-trades tr{cursor:pointer}#d-trades tr:hover td{background:var(--hover)}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
 .two>div{min-width:0}
 .two h3{font-family:var(--f-mono);font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
@@ -339,7 +351,13 @@ details[open] summary::before{content:"–"}
       <div><div class="eyebrow" id="d-eyebrow"></div><h2 id="d-title" style="font-size:24px"></h2></div>
       <div class="row" style="align-items:center"><a class="btn" id="d-tv" target="_blank" rel="noopener">Abrir no TradingView ↗</a><button type="button" id="d-close">Fechar</button></div>
     </header>
-    <div id="chart"></div>
+    <div>
+      <div class="chart-bar">
+        <div class="chart-legend"><span><i class="g">▲</i> trade com ganho</span><span><i class="r">▲</i> trade com perda</span><span><i class="a">●</i> análise do último pregão</span><span>Passe o mouse ou toque na seta para ver o resultado.</span></div>
+        <button type="button" id="d-pct" aria-pressed="false">Mostrar % no gráfico</button>
+      </div>
+      <div id="chart"></div>
+    </div>
     <div class="two">
       <div><h3 style="font-size:15px;margin-bottom:8px">Mesma ação, outras variações</h3><div class="mini"><table class="levels"><thead><tr><th>Variação</th><th>Trades</th><th>Acerto</th><th>Ganho méd.</th><th>Perda máx</th><th>Resultado</th></tr></thead><tbody id="d-levels"></tbody></table></div></div>
       <div><h3 style="font-size:15px;margin-bottom:8px">Trades no período</h3><div class="mini"><table><thead><tr><th>Data do evento</th><th>Variação na entrada</th><th>Entrada</th><th>Saída</th><th>Resultado</th></tr></thead><tbody id="d-trades"></tbody></table></div></div>
@@ -619,9 +637,31 @@ function openDetail(tk){
   const ser=chart.addCandlestickSeries({upColor:up,downColor:dn,wickUpColor:up,wickDownColor:dn,borderVisible:false});
   const bars=[];for(let i=0;i<s.d.length;i++){if(s.d[i]<S.start||s.d[i]>S.end)continue;bars.push({time:d2iso(s.d[i]),open:s.o[i],high:s.h[i],low:s.l[i],close:s.c[i]})}
   ser.setData(bars);
-  const marks=tr.map(t=>({time:d2iso(t.d),position:S.side==='c'?'belowBar':'aboveBar',color:t.r>0?up:dn,shape:S.side==='c'?'arrowUp':'arrowDown',text:pctS(t.r)}));
-  if(row&&row.sig)marks.push({time:d2iso(S.lastDate),position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',text:'análise'});
-  ser.setMarkers(marks);chart.timeScale().fitContent();
+  let showPct=false;try{showPct=localStorage.getItem('straddle-pct')==='1'}catch(e){}
+  const pb=$('d-pct');
+  const byDate=new Map();tr.forEach(t=>byDate.set(d2iso(t.d),t));
+  const sigIso=row&&row.sig?d2iso(S.lastDate):null;
+  const setMarks=()=>{const m=tr.map(t=>({time:d2iso(t.d),position:S.side==='c'?'belowBar':'aboveBar',color:t.r>0?up:dn,shape:S.side==='c'?'arrowUp':'arrowDown',size:0.8,text:showPct?pctS(t.r):''}));
+    if(sigIso)m.push({time:sigIso,position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',size:0.9,text:showPct?'análise':''});
+    m.sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);ser.setMarkers(m);
+    pb.setAttribute('aria-pressed',showPct);pb.textContent=showPct?'Ocultar % do gráfico':'Mostrar % no gráfico'};
+  setMarks();
+  pb.onclick=()=>{showPct=!showPct;try{localStorage.setItem('straddle-pct',showPct?'1':'0')}catch(e){}setMarks()};
+  const tip=document.createElement('div');tip.className='ctip';tip.hidden=true;el.appendChild(tip);
+  chart.subscribeCrosshairMove(p=>{
+    if(!p||!p.time||!p.point||p.point.x<0||p.point.y<0){tip.hidden=true;return}
+    const key=typeof p.time==='string'?p.time:(p.time.year+'-'+String(p.time.month).padStart(2,'0')+'-'+String(p.time.day).padStart(2,'0'));
+    const t=byDate.get(key);
+    if(t){tip.className='ctip '+(t.r>0?'pos':'neg');tip.innerHTML=`<b>${d2br(t.d)}</b><div class="row"><span>Variação na entrada</span><span class="${cls(t.v)}">${pctS(t.v)}</span></div><div class="row"><span>Entrada → saída</span><span>${nf2.format(t.en)} → ${nf2.format(t.ex)}</span></div><div class="row"><span>Resultado</span><b class="${cls(t.r)}" style="margin:0">${pctS(t.r)}</b></div>`}
+    else if(key===sigIso){tip.className='ctip ana';tip.innerHTML=`<b>Análise do último pregão</b><div class="row"><span>Variação</span><span class="${cls(row.sig.v)}">${pctS(row.sig.v)}</span></div><div class="row"><span>Preço</span><span>${nf2.format(row.sig.price)}</span></div>`}
+    else{tip.hidden=true;return}
+    tip.hidden=false;const w=tip.offsetWidth,hh=tip.offsetHeight;
+    let x=p.point.x+14,y=p.point.y-hh-12;if(x+w>el.clientWidth-60)x=p.point.x-w-14;if(y<6)y=p.point.y+16;
+    tip.style.left=Math.max(6,x)+'px';tip.style.top=Math.min(el.clientHeight-hh-6,y)+'px';
+  });
+  $('d-trades').querySelectorAll('tr').forEach((tr2,i)=>{const t=tr.slice().reverse()[i];if(!t)return;tr2.title='Ver no gráfico';tr2.onclick=()=>{const d=new Date(d2iso(t.d)+'T12:00:00');const f=new Date(d);f.setDate(f.getDate()-25);const g=new Date(d);g.setDate(g.getDate()+25);
+    try{chart.timeScale().setVisibleRange({from:f.toISOString().slice(0,10),to:g.toISOString().slice(0,10)})}catch(e){}$('chart').scrollIntoView({behavior:'smooth',block:'nearest'})}});
+  chart.timeScale().fitContent();
   ro=new ResizeObserver(()=>chart&&chart.applyOptions({width:el.clientWidth,height:el.clientHeight}));ro.observe(el);
 }
 function closeDetail(){$('overlay').hidden=true;document.body.style.overflow='';if(chart){chart.remove();chart=null}if(ro){ro.disconnect();ro=null}}
