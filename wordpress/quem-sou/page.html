@@ -1,0 +1,428 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Página inicial Trader Fabricio Nicolau: visual da Central de Notícias */
+html,body{background:#000!important;margin:0}
+.elementor-widget-html:has(.tfh),.elementor-widget-html:has(.tfh-bottom){margin:0!important}
+.tfh-form-src{max-width:520px;margin:0 auto}
+.tfh{--bg:#000;--panel:#0D1115;--panel2:#11161B;--sunk:#0A0C0F;--hover:#151B21;--line:#2A333B;--line2:#1C2228;--ink:#E8EAED;--ink2:#C3CAD1;--muted:#8A949D;--lime:#A8E05F;--lime-soft:rgba(168,224,95,.12);--lime-line:rgba(168,224,95,.45);--ease:cubic-bezier(.2,.7,.2,1);
+  background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.tfh *,.tfh-bottom *{box-sizing:border-box}
+.tfh a{color:inherit}
+.tfh .mono,.tfh-bottom .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tfh .tfh-wrap,.tfh-bottom .tfh-wrap{width:100%;max-width:1680px!important;margin:0 auto;padding-left:max(20px,3vw);padding-right:max(20px,3vw)}
+.tfh .btn,.tfh-bottom .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-radius:2px;padding:14px 20px;border:1px solid var(--line);color:var(--ink2);background:transparent;transition:background-color .2s,color .2s,border-color .2s,transform .15s;white-space:nowrap;cursor:pointer}
+.tfh .btn:hover,.tfh-bottom .btn:hover{border-color:var(--muted);color:var(--ink)}
+.tfh .btn.pri,.tfh-bottom .btn.pri{background:var(--lime);border-color:var(--lime);color:#0A0C0F;font-weight:500}
+.tfh .btn.pri:hover,.tfh-bottom .btn.pri:hover{filter:brightness(1.08);transform:translateY(-1px);color:#0A0C0F}
+.tfh .btn.pri,.tfh-bottom .btn.pri,.tfh-form .elementor-form .elementor-button{position:relative;overflow:hidden;isolation:isolate}
+.tfh .btn.pri::after,.tfh-bottom .btn.pri::after,.tfh-form .elementor-form .elementor-button::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);pointer-events:none;z-index:1;opacity:0}
+.tfh .btn .arr,.tfh-bottom .btn .arr{display:inline-block;transition:transform .25s var(--ease)}
+.tfh .btn:hover .arr,.tfh-bottom .btn:hover .arr{transform:translateX(4px)}
+.tfh .btn:not(.pri):hover,.tfh-bottom .btn:not(.pri):hover{border-color:var(--lime-line)}
+@media (prefers-reduced-motion:no-preference){
+  .tfh .btn.pri::after,.tfh-bottom .btn.pri::after,.tfh-form .elementor-form .elementor-button::after{animation:tfhSheen 5s ease-in-out infinite}
+  .tfh .btn.pri.pulse,.tfh-bottom .btn.pri.pulse,.tfh-form .elementor-form .elementor-button{animation:tfhGlow 3.2s ease-out infinite}
+  .tfh .btn.pri:hover::after,.tfh-bottom .btn.pri:hover::after,.tfh-form .elementor-form .elementor-button:hover::after{animation-duration:1.1s}
+  @keyframes tfhSheen{0%,62%{left:-60%;opacity:0}66%{opacity:1}92%{left:130%;opacity:1}100%{left:130%;opacity:0}}
+  @keyframes tfhGlow{0%{box-shadow:0 0 0 0 rgba(168,224,95,.45)}70%,100%{box-shadow:0 0 0 12px rgba(168,224,95,0)}}
+  .tfh .hero::before{animation:tfhZoom 2.2s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes tfhZoom{from{transform:scale(1.06);opacity:.4}to{transform:none;opacity:1}}
+  .tfh .stat{animation:tfhUp .7s var(--ease) both}
+  .tfh .stat:nth-child(1){animation-delay:.25s}.tfh .stat:nth-child(2){animation-delay:.35s}.tfh .stat:nth-child(3){animation-delay:.45s}
+  .tfh .formcard{transition:transform .35s var(--ease),border-color .35s}
+  .tfh .formcard:focus-within{border-color:var(--lime-line);transform:translateY(-2px)}
+}
+.tfh a:focus-visible,.tfh button:focus-visible,.tfh-bottom a:focus-visible,.tfh-bottom button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+
+/* topo */
+.tfh .hdr{position:sticky;top:0;z-index:50;background:rgba(10,12,15,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line2)}
+.tfh .hdr-in{display:flex;align-items:center;gap:22px;min-height:76px}
+.tfh .logo{display:flex;align-items:center;gap:14px;text-decoration:none;flex:none}
+.tfh .logo img{height:46px;width:auto;display:block}
+.tfh .logo .vsep{width:1px;height:26px;background:var(--line)}
+.tfh .logo .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.4}
+.tfh nav.menu{display:flex;align-items:center;gap:4px;margin-left:auto}
+.tfh nav.menu a{white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:10px 12px;border-radius:2px;border:1px solid transparent;transition:color .2s,border-color .2s}
+.tfh nav.menu a:hover{color:var(--ink);border-color:var(--line)}
+.tfh nav.menu a.on{color:var(--lime);border-color:var(--lime-line);background:var(--lime-soft)}
+.tfh .hdr-cta{display:flex;gap:8px;flex:none}
+@media (max-width:1320px){.tfh nav.menu a.opt{display:none}.tfh .logo .lbl{display:none}.tfh .logo .vsep{display:none}}
+.tfh .hdr-cta .btn{padding:11px 16px;font-size:11px}
+.tfh .burger{display:none;margin-left:auto;width:44px;height:44px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--ink);cursor:pointer;align-items:center;justify-content:center}
+.tfh .burger span,.tfh .burger span::before,.tfh .burger span::after{display:block;width:18px;height:2px;background:currentColor;position:relative;transition:transform .25s,background-color .2s}
+.tfh .burger span::before,.tfh .burger span::after{content:"";position:absolute;left:0}
+.tfh .burger span::before{top:-6px}.tfh .burger span::after{top:6px}
+.tfh .hdr.open .burger span{background:transparent}
+.tfh .hdr.open .burger span::before{transform:translateY(6px) rotate(45deg)}
+.tfh .hdr.open .burger span::after{transform:translateY(-6px) rotate(-45deg)}
+/* o site tem uma regra antiga que esconde header/nav na página inicial: liberar só o menu novo */
+.home .tfh header.hdr{display:block!important}
+@media (min-width:1101px){.home .tfh nav.menu{display:flex!important}}
+@media (max-width:1100px){.home .tfh nav.menu{display:none!important}.home .tfh .hdr.open nav.menu{display:grid!important}}
+.tfh .tape{border-bottom:1px solid var(--line2);background:var(--sunk);min-height:46px}
+@media (max-width:1100px){
+  .tfh .burger{display:inline-flex}
+  .tfh nav.menu,.tfh .hdr-cta{display:none}
+  .tfh .hdr.open .hdr-in{flex-wrap:wrap;padding-bottom:16px}
+  .tfh .hdr.open nav.menu{display:grid;width:100%;order:3;gap:6px;margin:0}
+  .tfh .hdr.open nav.menu a{padding:14px;border-color:var(--line2);font-size:12px}
+  .tfh .hdr.open .hdr-cta{display:grid;grid-template-columns:1fr 1fr;width:100%;order:4}
+  .tfh .logo .vsep,.tfh .logo .lbl{display:none}
+}
+
+/* hero */
+.tfh .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line2)}
+.tfh .hero::before{content:"";position:absolute;inset:0;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") right -4% center/auto 104% no-repeat;filter:saturate(.6) brightness(.85);opacity:1;transform-origin:85% 50%}
+.tfh .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,#000 30%,rgba(0,0,0,.86) 48%,rgba(0,0,0,.35) 66%,rgba(0,0,0,0) 82%),linear-gradient(0deg,#000 0%,transparent 22%)}
+.tfh .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,430px) minmax(220px,.62fr);gap:44px;align-items:center;padding-top:72px;padding-bottom:84px;}
+.tfh .hero-space{min-height:1px}
+@media (max-width:1280px){.tfh .hero-in{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}.tfh .hero-space{display:none}.tfh .hero::after{background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 45%,rgba(0,0,0,.55) 100%),linear-gradient(0deg,#000 0%,transparent 25%)}}
+.tfh .pill{display:inline-flex;align-items:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime);background:var(--lime-soft);border-radius:2px;padding:8px 14px}
+.tfh .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--lime)}
+.tfh h1{margin:22px 0 0;font-size:clamp(36px,5.2vw,68px);line-height:1.02;font-weight:600;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
+.tfh h1 span{display:block;color:var(--lime)}
+.tfh .lede{margin:22px 0 0;max-width:56ch;font-size:18px;line-height:1.65;color:var(--ink2)}
+.tfh .lede b{color:var(--ink);font-weight:500}
+.tfh .sig{display:flex;align-items:center;gap:14px;margin-top:30px}
+.tfh .sig b{display:block;font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.tfh .sig span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime)}
+.tfh .sig .bar{width:34px;height:2px;background:var(--lime)}
+
+/* cartão do formulário */
+.tfh .formcard{scroll-margin-top:100px;background:rgba(13,17,21,.92);border:1px solid var(--line);border-radius:2px;padding:30px 28px 24px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.tfh .formcard::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--lime)}
+.tfh .formcard h2{margin:8px 0 6px;font-size:26px;line-height:1.15;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.tfh .formcard .sub{margin:0 0 20px;color:var(--muted);font-size:14.5px}
+.tfh .formcard .safe{display:flex;align-items:center;gap:8px;margin:14px 0 0;color:var(--muted);font-size:12.5px}
+.tfh .formcard .safe a{color:var(--ink2);text-decoration:underline;text-decoration-color:var(--line)}
+#tfn-form-slot:empty::before{content:"Carregando formulário…";display:block;color:var(--muted);font-size:14px;padding:20px 0}
+
+/* estilo do formulário do Elementor dentro do cartão */
+.tfh-form .elementor-form .elementor-form-fields-wrapper{margin:0!important;display:grid!important;gap:12px}
+.tfh-form .elementor-form .elementor-field-group{width:100%!important;max-width:100%!important;padding:0!important;margin:0!important;flex:none!important}
+.tfh-form .elementor-form .elementor-field-group>label{display:block!important;font-family:"IBM Plex Mono",monospace!important;font-size:11px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#8A949D!important;margin-bottom:6px!important}
+.tfh-form .elementor-form input.elementor-field,.tfh-form .elementor-form .elementor-field-textual{background:#0A0C0F!important;border:1px solid #2A333B!important;border-radius:2px!important;color:#E8EAED!important;font-family:"IBM Plex Sans",sans-serif!important;font-size:16px!important;min-height:52px!important;padding:0 16px!important;box-shadow:none!important;transition:border-color .2s,box-shadow .2s!important}
+.tfh-form .elementor-form input.elementor-field::placeholder{color:#6F7A83!important}
+.tfh-form .elementor-form input.elementor-field:focus{border-color:#A8E05F!important;box-shadow:0 0 0 3px rgba(168,224,95,.15)!important;outline:none!important}
+.tfh-form .elementor-form .elementor-field-type-submit{margin-top:4px!important}
+.tfh-form .elementor-form .elementor-button{width:100%!important;min-height:54px!important;background:#A8E05F!important;color:#0A0C0F!important;border:1px solid #A8E05F!important;border-radius:2px!important;font-family:"IBM Plex Mono",monospace!important;font-size:13px!important;font-weight:500!important;letter-spacing:.16em!important;text-transform:uppercase!important;box-shadow:none!important;transition:filter .2s,transform .15s!important}
+.tfh-form .elementor-form .elementor-button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.tfh-form .elementor-form .elementor-button .elementor-button-text{color:#0A0C0F!important}
+.tfh-form .elementor-message{font-family:"IBM Plex Sans",sans-serif!important;font-size:14px!important;margin-top:12px!important}
+.tfh-form .elementor-message-success{color:#A8E05F!important}
+.tfh-form .elementor-message-danger,.tfh-form .elementor-error .elementor-field{color:#FF6370!important;border-color:#FF6370!important}
+
+/* números */
+.tfh .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line2)}
+.tfh .stat{padding:26px 24px;border-right:1px solid var(--line2);display:grid;gap:4px}
+.tfh .stat:last-child{border-right:0}
+.tfh .stat b{font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.tfh .stat b em{font-style:normal;color:var(--lime)}
+.tfh .stat b{text-transform:uppercase}
+.tfh .stat span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+@media (max-width:980px){
+  .tfh .hero::before{background-image:url("/wp-content/uploads/2025/08/banner-MOB-PRONTO-1.png");background-position:70% center;background-size:cover;opacity:.5}
+  .tfh .hero::after{background:linear-gradient(0deg,#000 0%,rgba(0,0,0,.82) 45%,rgba(0,0,0,.65) 100%)}
+  .tfh .hero-in{grid-template-columns:1fr;gap:34px;padding-top:44px;padding-bottom:52px}
+  .tfh .stats{grid-template-columns:1fr}
+  .tfh .stat{border-right:0;border-bottom:1px solid var(--line2)}
+  .tfh .stat:last-child{border-bottom:0}
+}
+@media (max-width:520px){.tfh .lede{font-size:16.5px}.tfh .formcard{padding:24px 18px 20px}.tfh .stat{padding:20px 16px}.tfh .stat b{font-size:22px}}
+@media (prefers-reduced-motion:no-preference){
+  .tfh .hero-in>*{animation:tfhUp .7s var(--ease) both}
+  .tfh .hero-in>*:nth-child(2){animation-delay:.12s}
+  .tfh .pill .dot{animation:tfhPulse 2s ease-out infinite}
+  @keyframes tfhUp{from{transform:translateY(14px)}to{transform:none}}
+  @keyframes tfhPulse{0%{box-shadow:0 0 0 0 rgba(168,224,95,.55)}80%,100%{box-shadow:0 0 0 8px rgba(168,224,95,0)}}
+}
+</style>
+<style>
+.tfh-bottom{--bg:#000;--panel:#0D1115;--panel2:#11161B;--sunk:#0A0C0F;--hover:#151B21;--line:#2A333B;--line2:#1C2228;--ink:#E8EAED;--ink2:#C3CAD1;--muted:#8A949D;--lime:#A8E05F;--lime-soft:rgba(168,224,95,.12);--lime-line:rgba(168,224,95,.45);--ease:cubic-bezier(.2,.7,.2,1);
+  background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.tfh-bottom a{color:inherit}
+.tfh-bottom .sec{padding:88px 0;border-bottom:1px solid var(--line2)}
+.tfh-bottom .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 40px;margin-bottom:36px}
+.tfh-bottom h2{margin:10px 0 0;font-size:clamp(28px,3.4vw,44px);line-height:1.06;font-weight:600;letter-spacing:-.02em;text-transform:uppercase;color:var(--ink);max-width:22ch}
+.tfh-bottom h2 span{color:var(--lime)}
+.tfh-bottom .head p{margin:0;max-width:46ch;color:var(--ink2)}
+.tfh-bottom .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tfh-bottom .skill{background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:24px 20px;display:grid;gap:14px;align-content:start;transition:border-color .25s,transform .25s var(--ease),background-color .25s}
+.tfh-bottom .skill:hover{border-color:var(--lime-line);transform:translateY(-3px);background:var(--hover)}
+.tfh-bottom .ico{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;background:var(--sunk);color:var(--lime)}
+.tfh-bottom .skill h3{margin:0;font-size:17px;line-height:1.35;font-weight:600;color:var(--ink)}
+.tfh-bottom .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tfh-bottom a.tool{display:grid;gap:12px;align-content:start;text-decoration:none;background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:26px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s var(--ease)}
+.tfh-bottom a.tool:hover{border-color:var(--lime-line);transform:translateY(-3px)}
+.tfh-bottom a.tool h3{margin:0;font-size:22px;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink)}
+.tfh-bottom a.tool h3 span{color:var(--lime)}
+.tfh-bottom a.tool p{margin:0;color:var(--muted);font-size:15px}
+.tfh-bottom a.tool .go{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.tfh-bottom a.tool:hover .go{color:var(--lime)}
+.tfh-bottom a.tool.feat{border-color:var(--lime-line);background:linear-gradient(160deg,rgba(168,224,95,.08),transparent 60%),var(--panel)}
+.tfh-bottom a.tool.feat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--lime)}
+.tfh-bottom .tag{justify-self:start;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime-line);background:var(--lime-soft);border-radius:2px;padding:3px 8px}
+.tfh-bottom .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.tfh-bottom .about .ph{aspect-ratio:16/10;max-width:100%;border:1px solid var(--line2);border-radius:2px;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") 82% 40%/cover;filter:saturate(.6)}
+.tfh-bottom .about p{color:var(--ink2);margin:16px 0 0;max-width:52ch}
+.tfh-bottom .office{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:14px}
+.tfh-bottom .photos{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:440px}
+.tfh-bottom .photos figure{margin:0;border:1px solid var(--line2);border-radius:2px;overflow:hidden;position:relative;background:var(--panel)}
+.tfh-bottom .photos figure:first-child{grid-row:span 2}
+.tfh-bottom .photos img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--ease)}
+.tfh-bottom .photos figure:hover img{transform:scale(1.04)}
+.tfh-bottom .photos figcaption{position:absolute;left:10px;bottom:10px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#E8EAED;background:rgba(0,0,0,.7);padding:4px 8px;border-radius:2px}
+.tfh-bottom .place{display:grid;gap:12px;grid-template-rows:auto 1fr}
+.tfh-bottom .addr{background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:22px;display:grid;gap:10px}
+.tfh-bottom .addr b{font-size:18px;font-weight:600;color:var(--ink)}
+.tfh-bottom .addr p{margin:0;color:var(--ink2)}
+.tfh-bottom .addr .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tfh-bottom .addr .btn{padding:11px 14px;font-size:11px}
+.tfh-bottom .map{border:1px solid var(--line2);border-radius:2px;overflow:hidden;min-height:260px;background:var(--panel)}
+.tfh-bottom .map iframe{display:block;width:100%;height:100%;min-height:260px;border:0;filter:grayscale(.85) invert(.92) hue-rotate(180deg) contrast(.9)}
+.tfh-bottom .cta{padding:96px 0;text-align:left;background:radial-gradient(80% 120% at 0% 0%,rgba(168,224,95,.10),transparent 60%),var(--bg)}
+.tfh-bottom .cta-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px}
+.tfh-bottom .cta h2{max-width:24ch}
+/* rodapé */
+.tfh-bottom footer{background:var(--sunk);border-top:1px solid var(--line2);padding:60px 0 0}
+.tfh-bottom .fgrid{display:grid;grid-template-columns:1.3fr 1fr 1.1fr 1.2fr;gap:36px}
+.tfh-bottom .fbrand img{height:52px;width:auto;display:block}
+.tfh-bottom .fbrand p{margin:14px 0 0;color:var(--muted);font-size:14px;max-width:34ch}
+.tfh-bottom footer h4{margin:0 0 14px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tfh-bottom footer ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.tfh-bottom footer li,.tfh-bottom footer address{font-style:normal;font-size:14.5px;color:var(--ink2);line-height:1.6}
+.tfh-bottom footer a{text-decoration:none;color:var(--ink2);transition:color .2s}
+.tfh-bottom footer a:hover{color:var(--lime)}
+.tfh-bottom .social{display:flex;gap:8px;margin-top:18px}
+.tfh-bottom .social a{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;color:var(--ink2)}
+.tfh-bottom .social a:hover{border-color:var(--lime);color:var(--lime)}
+.tfh-bottom .legal{margin-top:48px;border-top:1px solid var(--line2);padding:20px 0 28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;font-size:12.5px;color:var(--muted)}
+.tfh-bottom .legal b{color:var(--ink2);font-weight:500}
+.tfh-bottom .disc{font-size:12px;color:#6F7A83;padding-bottom:26px;max-width:110ch}
+@media (max-width:1100px){.tfh-bottom .grid5{grid-template-columns:repeat(3,minmax(0,1fr))}.tfh-bottom .fgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){.tfh-bottom .sec{padding:60px 0}.tfh-bottom .grid3,.tfh-bottom .about,.tfh-bottom .office{grid-template-columns:1fr}.tfh-bottom .grid5{grid-template-columns:repeat(2,minmax(0,1fr))}.tfh-bottom .photos{min-height:320px}.tfh-bottom .cta{padding:64px 0}}
+@media (max-width:520px){.tfh-bottom .grid5{grid-template-columns:1fr}.tfh-bottom .fgrid{grid-template-columns:1fr}.tfh-bottom .photos{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;min-height:0}.tfh-bottom .photos figure:first-child{grid-column:1/-1;grid-row:auto;aspect-ratio:4/3}.tfh-bottom .photos figure{aspect-ratio:3/4}}
+@media (prefers-reduced-motion:no-preference){
+  .tfh-bottom .rv{transition:transform .7s var(--ease)}
+  .tfh-bottom .rv.pre{transform:translateY(18px)}
+}
+</style>
+
+<style>
+.tfq .qhero{position:relative;overflow:hidden;border-bottom:1px solid var(--line2);background:radial-gradient(70% 90% at 100% 0%,rgba(168,224,95,.07),transparent 60%),#000}
+.tfq .qhero-in{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding-top:72px;padding-bottom:80px}
+.tfq .pill{display:inline-flex;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime);background:var(--lime-soft);border-radius:2px;padding:8px 14px}
+.tfq h1{margin:22px 0 0;font-size:clamp(34px,4.6vw,62px);line-height:1.03;font-weight:600;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
+.tfq h1 span{display:block;color:var(--lime)}
+.tfq .lede{margin:22px 0 0;max-width:56ch;font-size:18px;line-height:1.65;color:var(--ink2)}
+.tfq .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.tfq .fact{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:12px 16px;display:grid;gap:2px;min-width:150px}
+.tfq .fact b{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:500;color:var(--ink)}
+.tfq .fact b em{font-style:normal;color:var(--lime)}
+.tfq .fact span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tfq .photo{position:relative;max-width:520px;justify-self:end;width:100%}
+.tfq .photo img{display:block;width:100%;height:auto;aspect-ratio:700/657;object-fit:cover;border:1px solid var(--line);border-radius:2px;filter:saturate(.9)}
+.tfq .photo::before{content:"";position:absolute;inset:14px -14px -14px 14px;border:1px solid var(--lime-line);border-radius:2px;z-index:-1}
+.tfq .photo .cap{position:absolute;left:-1px;bottom:-1px;background:#000;border:1px solid var(--line);border-left:2px solid var(--lime);padding:12px 16px;display:grid;gap:2px}
+.tfq .photo .cap b{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.tfq .photo .cap span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime)}
+.tfq .story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
+.tfq .story p{margin:0 0 16px;color:var(--ink2);font-size:17px;line-height:1.7;max-width:58ch}
+.tfq .timeline{list-style:none;margin:0;padding:0;position:relative}
+.tfq .timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.tfq .timeline li{position:relative;padding:0 0 28px 36px}
+.tfq .timeline li:last-child{padding-bottom:0}
+.tfq .timeline li::before{content:"";position:absolute;left:0;top:6px;width:15px;height:15px;border-radius:50%;background:#000;border:2px solid var(--line)}
+.tfq .timeline li.now::before{border-color:var(--lime);background:var(--lime)}
+.tfq .timeline .when{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime)}
+.tfq .timeline h3{margin:4px 0 4px;font-size:19px;font-weight:600;color:var(--ink)}
+.tfq .timeline p{margin:0;color:var(--muted);font-size:15px}
+.tfq .card{background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:26px;display:grid;gap:12px;align-content:start;transition:border-color .25s,transform .25s var(--ease),background-color .25s}
+.tfq .card:hover{border-color:var(--lime-line);transform:translateY(-3px);background:var(--hover)}
+.tfq .card h3{margin:0;font-size:21px;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink)}
+.tfq .card p{margin:0;color:var(--muted);font-size:15.5px}
+.tfq .markets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tfq .market{display:flex;align-items:center;gap:16px;border:1px solid var(--line2);background:var(--panel);border-radius:2px;padding:22px}
+.tfq .market h3{margin:0;font-size:18px;font-weight:600;text-transform:uppercase;color:var(--ink)}
+.tfq .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.tfq .qhero-in,.tfq .story{grid-template-columns:1fr;gap:40px}.tfq .photo{justify-self:start;max-width:440px}.tfq .markets,.tfq .grid2{grid-template-columns:1fr}}
+@media (max-width:520px){.tfq .lede{font-size:16.5px}.tfq .fact{min-width:0;flex:1 1 40%}.tfq .photo::before{inset:10px -10px -10px 10px}}
+@media (prefers-reduced-motion:no-preference){.tfq .qhero-in>*{animation:tfhUp .7s var(--ease) both}.tfq .qhero-in>*:nth-child(2){animation-delay:.12s}}
+</style>
+
+<div class="tfh">
+  <header class="hdr" id="tfh-hdr">
+    <div class="tfh-wrap hdr-in">
+      <a class="logo" href="/" aria-label="Início">
+        <img src="/wp-content/uploads/2025/08/Logo-insight-financeiro-sem-fundo-1.webp" alt="Insight Financeiro" width="46" height="46">
+        <span class="vsep" aria-hidden="true"></span>
+        <span class="lbl">Trader<br>Fabricio Nicolau</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <a href="/">Início</a>
+        <a class="on" href="/quem-e-trader-fabricio-nicolau/">Quem sou</a>
+        <a href="/grupo-traders/">Grupo de traders</a>
+        <a href="/central-de-noticias/">Notícias</a>
+        <a href="/ACOESB3/">Straddle B3</a>
+        <a class="opt" href="/#escritorio">Escritório</a>
+      </nav>
+      <div class="hdr-cta">
+        <a class="btn" href="/area-do-trader/">Área do trader</a>
+        <a class="btn pri pulse" href="/cadastro-aluno/">Quero me inscrever <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <button type="button" class="burger" id="tfh-burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="tfh-hdr"><span></span></button>
+    </div>
+  </header>
+  <div class="tape">
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq 100"},{"proName":"FOREXCOM:DJI","title":"Dow Jones"},{"proName":"FX_IDC:USDBRL","title":"Dólar"},{"proName":"TVC:DXY","title":"DXY"},{"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},{"proName":"TVC:UKOIL","title":"Petróleo Brent"},{"proName":"TVC:GOLD","title":"Ouro"}],"showSymbolLogo":true,"isTransparent":true,"displayMode":"adaptive","colorTheme":"dark","locale":"br"}
+      </script>
+    </div>
+  </div>
+
+
+</div>
+<div class="tfh-bottom tfq">
+  <section class="qhero">
+    <div class="tfh-wrap qhero-in">
+      <div>
+        <span class="pill">Quem sou</span>
+        <h1>Há 10 anos lendo o mercado na prática.<span>Hoje ensino a operar com mais segurança.</span></h1>
+        <p class="lede">Especialista em tape reading, formado em Gestão Financeira e criador do Método Híbrido de leitura de fluxo.</p>
+        <div class="facts">
+          <div class="fact"><b>10 <em>anos</em></b><span>operando</span></div>
+          <div class="fact"><b>7 <em>anos</em></b><span>ensinando</span></div>
+          <div class="fact"><b><em>+</em>500</b><span>traders formados</span></div>
+        </div>
+      </div>
+      <figure class="photo" style="margin:0">
+        <img src="{{FOTO}}" alt="Fabricio Nicolau, especialista em tape reading" width="700" height="657">
+        <figcaption class="cap"><b>Fabricio Nicolau</b><span>Especialista em tape reading</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="tfh-wrap story">
+      <div class="rv">
+        <span class="mono">A trajetória</span>
+        <h2>Aprendeu operando, <span>sem atalhos</span></h2>
+        <p style="margin-top:22px">Há 10 anos, Fabricio Nicolau começou a operar gráficos sem cursos de referência disponíveis. O aprendizado veio da prática direta com o mercado: testando, errando e ajustando estratégias no dia a dia.</p>
+        <p>Essa base foi somada a uma formação em Gestão Financeira, unindo a vivência de quem operou na raça com o embasamento técnico necessário para entender o mercado de forma estruturada.</p>
+        <p>Há 7 anos, essa experiência começou a ser compartilhada: Fabricio passou a ensinar outras pessoas a operar com mais segurança, traduzindo anos de prática em um método claro e replicável.</p>
+      </div>
+      <ol class="timeline rv">
+        <li><span class="when">Há 10 anos</span><h3>Primeiras operações</h3><p>Aprendizado direto com o mercado, sem cursos de referência.</p></li>
+        <li><span class="when">Formação</span><h3>Gestão Financeira</h3><p>Base técnica para estruturar a leitura de mercado.</p></li>
+        <li><span class="when">Há 7 anos</span><h3>Começa a ensinar</h3><p>A prática vira um método claro e replicável.</p></li>
+        <li class="now"><span class="when">Hoje</span><h3>+500 traders formados</h3><p>Cursos online e ao vivo, do escritório no Batel, em Curitiba.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="tfh-wrap">
+      <div class="head rv"><div><span class="mono">O método</span><h2>Método híbrido: <span>fluxo, SMC e price action</span></h2></div><p>Três leituras que se completam para entender quem está comprando, quem está vendendo e para onde o preço tende a ir.</p></div>
+      <div class="grid3">
+        <div class="card rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><h3>Leitura de fluxo</h3><p>Análise do comportamento de compradores e vendedores em tempo real, direto no livro de ofertas.</p></div>
+        <div class="card rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/></svg></span><h3>Smart Money (SMC)</h3><p>Identificação dos movimentos do "dinheiro inteligente" para entender a estrutura real do mercado.</p></div>
+        <div class="card rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span><h3>Price action</h3><p>Leitura do preço puro no gráfico, sem depender de excesso de indicadores.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="tfh-wrap">
+      <div class="head rv"><div><span class="mono">Onde aplicar</span><h2>Um método, <span>três mercados</span></h2></div></div>
+      <div class="markets">
+        <div class="market rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span><h3>Bolsa brasileira</h3></div>
+        <div class="market rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5V8m1.5-2v2m0 8v2m2-12v2m0 8v2"/></svg></span><h3>Mercado cripto</h3></div>
+        <div class="market rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><h3>Mercado internacional</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="tfh-wrap">
+      <div class="head rv"><div><span class="mono">Como são as aulas</span><h2>Cursos online <span>e ao vivo</span></h2></div></div>
+      <div class="grid2">
+        <div class="card rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></span><h3>No seu ritmo, de onde estiver</h3><p>Conteúdo acessível para quem quer aprender a operar sem depender de estar em Curitiba.</p></div>
+        <div class="card rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg></span><h3>Contato direto com o Fabricio</h3><p>Aulas ao vivo para tirar dúvidas em tempo real e acompanhar a leitura do mercado junto com o professor.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="tfh-wrap cta-in rv">
+      <div><span class="mono">Próximo passo</span><h2>Pronto para aprender a operar <span>com segurança?</span></h2><p style="margin:14px 0 0;color:var(--ink2)">Junte-se aos mais de 500 traders que já passaram pelo método.</p></div>
+      <a class="btn pri pulse" href="/cadastro-aluno/" style="padding:18px 26px;font-size:13px">Quero me inscrever agora <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="tfh-wrap">
+      <div class="fgrid">
+        <div class="fbrand">
+          <img src="/wp-content/uploads/2025/08/Logo-insight-financeiro-sem-fundo-1.webp" alt="Insight Financeiro" width="52" height="52" loading="lazy">
+          <p>Educação para quem quer operar na bolsa com método, gestão de risco e leitura real de mercado.</p>
+          <div class="social">
+            <a href="https://wa.me/5541987336281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></a>
+            <a href="mailto:contato@traderfabricionicolau.com.br" aria-label="E-mail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h4>Navegação</h4>
+          <ul>
+            <li><a href="/quem-e-trader-fabricio-nicolau/">Quem sou</a></li>
+            <li><a href="/grupo-traders/">Grupo de traders</a></li>
+            <li><a href="/central-de-noticias/">Central de Notícias</a></li>
+            <li><a href="/ACOESB3/">Straddle B3</a></li>
+            <li><a href="/area-do-trader/">Área do trader</a></li>
+            <li><a href="/politica-de-privacidade/">Política de privacidade</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="https://wa.me/5541987336281" target="_blank" rel="noopener">(41) 98733-6281</a></li>
+            <li><a href="mailto:contato@traderfabricionicolau.com.br">contato@traderfabricionicolau.com.br</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Endereço</h4>
+          <address>Ed. Jatobá · Rua Pasteur, 463<br>13º andar · Batel<br>Curitiba · PR · CEP 80250-104</address>
+        </div>
+      </div>
+      <div class="legal">
+        <span><b>Trader Fabricio Nicolau Educacional</b> (DD Treinamentos) · CNPJ 35.719.716/0001-28</span>
+        <span>© <span id="tfh-year">2026</span> Todos os direitos reservados</span>
+      </div>
+      <p class="disc">Conteúdo educacional. Resultados passados não garantem resultados futuros e nada aqui é recomendação de investimento. Operar no mercado financeiro envolve risco de perda.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* leva o formulário do Elementor para dentro do cartão do topo */
+  function moveForm(){
+    var slot=document.getElementById('tfn-form-slot');
+    var w=document.querySelector('.tfh-form-src .elementor-widget-form')||document.querySelector('.tfh-form-src');
+    if(slot&&w&&!slot.contains(w)){slot.appendChild(w);var src=document.querySelector('.tfh-form-src');if(src&&src!==w)src.style.display='none'}
+  }
+  moveForm();document.addEventListener('DOMContentLoaded',moveForm);
+  /* menu do celular */
+  var hdr=document.getElementById('tfh-hdr'),b=document.getElementById('tfh-burger');
+  if(b&&hdr){b.addEventListener('click',function(){var o=hdr.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.setAttribute('aria-label',o?'Fechar menu':'Abrir menu')});
+    hdr.querySelectorAll('nav a,.hdr-cta a').forEach(function(a){a.addEventListener('click',function(){hdr.classList.remove('open');b.setAttribute('aria-expanded','false')})})}
+  var y=document.getElementById('tfh-year');if(y)y.textContent=new Date().getFullYear();
+  /* revelar seções ao rolar */
+  if('IntersectionObserver' in window&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    var els=[].slice.call(document.querySelectorAll('.tfh-bottom .rv'));
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){var r=el.getBoundingClientRect();if(r.top>innerHeight){el.classList.add('pre');io.observe(el)}});
+  }
+})();
+</script>
