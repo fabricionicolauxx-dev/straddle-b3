@@ -2,6 +2,7 @@
 import json, os
 
 CSS = r"""
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 .tfn-auth{--bg:#000;--panel:#0D1115;--panel2:#11161B;--sunk:#0A0C0F;--line:#2A333B;--line2:#1C2228;--ink:#E8EAED;--ink2:#C3CAD1;--muted:#8A949D;--lime:#A8E05F;--lime-soft:rgba(168,224,95,.12);--lime-line:rgba(168,224,95,.45);--red:#FF6370;--ease:cubic-bezier(.2,.7,.2,1);
  min-height:100vh;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);-webkit-font-smoothing:antialiased}
@@ -42,7 +43,8 @@ CSS = r"""
 .tfn-auth .um .um-req{color:var(--lime)!important}
 .tfn-auth .um input[type=text],.tfn-auth .um input[type=password],.tfn-auth .um input[type=email],.tfn-auth .um input[type=tel],.tfn-auth .um input[type=number],.tfn-auth .um input[type=url],.tfn-auth .um textarea,.tfn-auth .um select{background:var(--sunk)!important;border:1px solid var(--line)!important;border-radius:2px!important;color:var(--ink)!important;font-family:"IBM Plex Sans",sans-serif!important;font-size:15px!important;height:48px!important;padding:0 14px!important;box-shadow:none!important;transition:border-color .2s,box-shadow .2s!important}
 .tfn-auth .um textarea{height:auto!important;padding:12px 14px!important}
-.tfn-auth .um input::placeholder{color:#6F7A83!important}
+.tfn-auth .um input::placeholder{color:#6F7A83!important;font-family:"IBM Plex Sans",sans-serif!important}
+.tfn-auth .um,.tfn-auth .um *{font-family:"IBM Plex Sans",system-ui,sans-serif}
 .tfn-auth .um input:focus,.tfn-auth .um textarea:focus,.tfn-auth .um select:focus{border-color:var(--lime)!important;box-shadow:0 0 0 3px rgba(168,224,95,.15)!important;outline:none!important}
 .tfn-auth .um input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px var(--sunk) inset!important;-webkit-text-fill-color:var(--ink)!important}
 .tfn-auth .um .um-col-alt{margin-top:6px!important;display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
@@ -132,12 +134,12 @@ pages = {
                 "Entre para abrir o Straddle B3, ver os sinais do último pregão e acompanhar a Central de Notícias.",
                 ("Entrar", "Acesse sua conta"), "Use o usuário ou e-mail e a senha do seu cadastro.",
                 '[ultimatemember form_id="655"]',
-                '<p class="alt">Ainda não tem conta? <a href="/register/">Cadastre-se grátis</a></p>'),
+                ''),
     "660": page("Crie sua conta", "e acesse grátis.",
                 "Cadastro rápido, sem cartão. Você entra na hora e já pode usar todas as ferramentas da área do trader.",
                 ("Cadastro gratuito", "Crie sua conta"), "Leva menos de um minuto.",
                 '[ultimatemember form_id="654"]',
-                '<p class="alt">Já tem conta? <a href="/login/">Entrar</a></p>'),
+                ''),
     "664": page("Recupere", "seu acesso.",
                 "Informe o e-mail ou usuário do cadastro. Enviamos um link para você criar uma nova senha.",
                 ("Senha", "Recuperar senha"), "Confira também a caixa de spam.",
