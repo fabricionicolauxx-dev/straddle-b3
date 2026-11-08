@@ -14,6 +14,24 @@ html,body{background:#000!important;margin:0}
 .tfh .btn:hover,.tfh-bottom .btn:hover{border-color:var(--muted);color:var(--ink)}
 .tfh .btn.pri,.tfh-bottom .btn.pri{background:var(--lime);border-color:var(--lime);color:#0A0C0F;font-weight:500}
 .tfh .btn.pri:hover,.tfh-bottom .btn.pri:hover{filter:brightness(1.08);transform:translateY(-1px);color:#0A0C0F}
+.tfh .btn.pri,.tfh-bottom .btn.pri,.tfh-form .elementor-form .elementor-button{position:relative;overflow:hidden;isolation:isolate}
+.tfh .btn.pri::after,.tfh-bottom .btn.pri::after,.tfh-form .elementor-form .elementor-button::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);pointer-events:none;z-index:1;opacity:0}
+.tfh .btn .arr,.tfh-bottom .btn .arr{display:inline-block;transition:transform .25s var(--ease)}
+.tfh .btn:hover .arr,.tfh-bottom .btn:hover .arr{transform:translateX(4px)}
+.tfh .btn:not(.pri):hover,.tfh-bottom .btn:not(.pri):hover{border-color:var(--lime-line)}
+@media (prefers-reduced-motion:no-preference){
+  .tfh .btn.pri::after,.tfh-bottom .btn.pri::after,.tfh-form .elementor-form .elementor-button::after{animation:tfhSheen 5s ease-in-out infinite}
+  .tfh .btn.pri.pulse,.tfh-bottom .btn.pri.pulse,.tfh-form .elementor-form .elementor-button{animation:tfhGlow 3.2s ease-out infinite}
+  .tfh .btn.pri:hover::after,.tfh-bottom .btn.pri:hover::after,.tfh-form .elementor-form .elementor-button:hover::after{animation-duration:1.1s}
+  @keyframes tfhSheen{0%,62%{left:-60%;opacity:0}66%{opacity:1}92%{left:130%;opacity:1}100%{left:130%;opacity:0}}
+  @keyframes tfhGlow{0%{box-shadow:0 0 0 0 rgba(168,224,95,.45)}70%,100%{box-shadow:0 0 0 12px rgba(168,224,95,0)}}
+  .tfh .hero::before{animation:tfhZoom 2.2s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes tfhZoom{from{transform:scale(1.06);opacity:.4}to{transform:none;opacity:1}}
+  .tfh .stat{animation:tfhUp .7s var(--ease) both}
+  .tfh .stat:nth-child(1){animation-delay:.25s}.tfh .stat:nth-child(2){animation-delay:.35s}.tfh .stat:nth-child(3){animation-delay:.45s}
+  .tfh .formcard{transition:transform .35s var(--ease),border-color .35s}
+  .tfh .formcard:focus-within{border-color:var(--lime-line);transform:translateY(-2px)}
+}
 .tfh a:focus-visible,.tfh button:focus-visible,.tfh-bottom a:focus-visible,.tfh-bottom button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 
 /* topo */
@@ -50,9 +68,11 @@ html,body{background:#000!important;margin:0}
 
 /* hero */
 .tfh .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line2)}
-.tfh .hero::before{content:"";position:absolute;inset:0;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") right 2% top 20%/auto 112% no-repeat;filter:saturate(.55) brightness(.75);opacity:.9}
-.tfh .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.94) 34%,rgba(0,0,0,.55) 62%,rgba(0,0,0,.35) 100%),linear-gradient(0deg,#000 0%,transparent 30%)}
-.tfh .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:48px;align-items:center;padding-top:72px;padding-bottom:80px}
+.tfh .hero::before{content:"";position:absolute;inset:0;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") right -4% center/auto 104% no-repeat;filter:saturate(.6) brightness(.85);opacity:1;transform-origin:85% 50%}
+.tfh .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,#000 30%,rgba(0,0,0,.86) 48%,rgba(0,0,0,.35) 66%,rgba(0,0,0,0) 82%),linear-gradient(0deg,#000 0%,transparent 22%)}
+.tfh .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,430px) minmax(220px,.62fr);gap:44px;align-items:center;padding-top:72px;padding-bottom:84px;max-width:1680px!important}
+.tfh .hero-space{min-height:1px}
+@media (max-width:1280px){.tfh .hero-in{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}.tfh .hero-space{display:none}.tfh .hero::after{background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 45%,rgba(0,0,0,.55) 100%),linear-gradient(0deg,#000 0%,transparent 25%)}}
 .tfh .pill{display:inline-flex;align-items:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime);background:var(--lime-soft);border-radius:2px;padding:8px 14px}
 .tfh .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--lime)}
 .tfh h1{margin:22px 0 0;font-size:clamp(36px,5.2vw,68px);line-height:1.02;font-weight:600;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
@@ -89,20 +109,21 @@ html,body{background:#000!important;margin:0}
 .tfh-form .elementor-message-danger,.tfh-form .elementor-error .elementor-field{color:#FF6370!important;border-color:#FF6370!important}
 
 /* números */
-.tfh .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line2)}
+.tfh .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line2)}
 .tfh .stat{padding:26px 24px;border-right:1px solid var(--line2);display:grid;gap:4px}
 .tfh .stat:last-child{border-right:0}
 .tfh .stat b{font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
 .tfh .stat b em{font-style:normal;color:var(--lime)}
-.tfh .stat span{font-size:14px;color:var(--muted)}
+.tfh .stat b{text-transform:uppercase}
+.tfh .stat span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 
 @media (max-width:980px){
   .tfh .hero::before{background-image:url("/wp-content/uploads/2025/08/banner-MOB-PRONTO-1.png");background-position:70% center;background-size:cover;opacity:.5}
   .tfh .hero::after{background:linear-gradient(0deg,#000 0%,rgba(0,0,0,.82) 45%,rgba(0,0,0,.65) 100%)}
   .tfh .hero-in{grid-template-columns:1fr;gap:34px;padding-top:44px;padding-bottom:52px}
-  .tfh .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tfh .stat:nth-child(2){border-right:0}
-  .tfh .stat:nth-child(-n+2){border-bottom:1px solid var(--line2)}
+  .tfh .stats{grid-template-columns:1fr}
+  .tfh .stat{border-right:0;border-bottom:1px solid var(--line2)}
+  .tfh .stat:last-child{border-bottom:0}
 }
 @media (max-width:520px){.tfh .lede{font-size:16.5px}.tfh .formcard{padding:24px 18px 20px}.tfh .stat{padding:20px 16px}.tfh .stat b{font-size:22px}}
 @media (prefers-reduced-motion:no-preference){
@@ -132,7 +153,7 @@ html,body{background:#000!important;margin:0}
       </nav>
       <div class="hdr-cta">
         <a class="btn" href="/area-do-trader/">Área do trader</a>
-        <a class="btn pri" href="#inscricao">Quero me inscrever</a>
+        <a class="btn pri pulse" href="#inscricao">Quero me inscrever <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <button type="button" class="burger" id="tfh-burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="tfh-hdr"><span></span></button>
     </div>
@@ -149,7 +170,7 @@ html,body{background:#000!important;margin:0}
   <section class="hero">
     <div class="tfh-wrap hero-in">
       <div>
-        <span class="pill"><span class="dot" aria-hidden="true"></span>+ de 500 traders formados</span>
+        <span class="pill">+ de 500 traders formados</span>
         <h1>Aprenda a operar na bolsa de valores<span>com experiência real de mercado.</span></h1>
         <p class="lede">Aprenda a operar como um trader profissional com os cursos <b>online e ao vivo</b> do Prof. Fabricio Nicolau: um método completo, passo a passo, ao seu alcance em qualquer lugar.</p>
         <div class="sig"><span class="bar" aria-hidden="true"></span><div><b>Fabricio Nicolau</b><span>Especialista em tape reading</span></div></div>
@@ -161,6 +182,7 @@ html,body{background:#000!important;margin:0}
         <div id="tfn-form-slot"></div>
         <p class="safe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Seus dados estão protegidos. Veja a <a href="/politica-de-privacidade/">política de privacidade</a>.</span></p>
       </div>
+      <div class="hero-space" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -169,7 +191,6 @@ html,body{background:#000!important;margin:0}
       <div class="stat"><b><em>+</em>500</b><span>traders formados</span></div>
       <div class="stat"><b>Online <em>+</em> ao vivo</b><span>aulas no seu ritmo e em tempo real</span></div>
       <div class="stat"><b>Fluxo <em>+</em> price action</b><span>o método híbrido de leitura</span></div>
-      <div class="stat"><b>Batel<em>,</em> Curitiba</b><span>escritório no Ed. Jatobá</span></div>
     </div>
   </div>
 </div>
