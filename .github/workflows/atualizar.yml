@@ -1,0 +1,45 @@
+name: Atualizar dados e publicar site
+
+on:
+  schedule:
+    # Horários em UTC. 23:17 UTC = 20:17 em Brasília (seg a sex, depois do fechamento)
+    - cron: "17 23 * * 1-5"
+    # Segunda tentativa na manhã seguinte, caso a B3 tenha publicado o arquivo tarde
+    - cron: "41 10 * * 2-6"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Baixar dados da B3
+        run: python scripts/update.py --out site/data/quotes.json --start-year 2024
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
