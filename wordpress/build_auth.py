@@ -19,6 +19,8 @@ html[data-tfn-theme=light] .tfn-auth .um .um-field-error,html[data-tfn-theme=lig
 html[data-tfn-theme=light] .tfn-auth .um input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #F7F9FA inset!important}
 .tfn-auth,.tfn-auth .mc,.tfn-auth .mc-r,.tfn-auth .um input{transition:background-color .3s,border-color .3s,color .3s}
 .tfn-auth .tt{width:42px;height:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:transparent;cursor:pointer;color:var(--ink)}
+.tfn-auth .nb.tt{padding:0;width:42px;height:42px;flex:none}
+.tfn-auth .tt svg{flex:none}
 .tfn-auth .tt .i-sun{display:none}
 html[data-tfn-theme=light] .tfn-auth .tt .i-sun{display:block}
 html[data-tfn-theme=light] .tfn-auth .tt .i-moon{display:none}
