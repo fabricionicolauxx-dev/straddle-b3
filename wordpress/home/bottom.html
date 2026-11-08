@@ -1,0 +1,214 @@
+<style>
+.tfh-bottom{--bg:#000;--panel:#0D1115;--panel2:#11161B;--sunk:#0A0C0F;--hover:#151B21;--line:#2A333B;--line2:#1C2228;--ink:#E8EAED;--ink2:#C3CAD1;--muted:#8A949D;--lime:#A8E05F;--lime-soft:rgba(168,224,95,.12);--lime-line:rgba(168,224,95,.45);--ease:cubic-bezier(.2,.7,.2,1);
+  background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.tfh-bottom a{color:inherit}
+.tfh-bottom .sec{padding:88px 0;border-bottom:1px solid var(--line2)}
+.tfh-bottom .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 40px;margin-bottom:36px}
+.tfh-bottom h2{margin:10px 0 0;font-size:clamp(28px,3.4vw,44px);line-height:1.06;font-weight:600;letter-spacing:-.02em;text-transform:uppercase;color:var(--ink);max-width:22ch}
+.tfh-bottom h2 span{color:var(--lime)}
+.tfh-bottom .head p{margin:0;max-width:46ch;color:var(--ink2)}
+.tfh-bottom .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tfh-bottom .skill{background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:24px 20px;display:grid;gap:14px;align-content:start;transition:border-color .25s,transform .25s var(--ease),background-color .25s}
+.tfh-bottom .skill:hover{border-color:var(--lime-line);transform:translateY(-3px);background:var(--hover)}
+.tfh-bottom .ico{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;background:var(--sunk);color:var(--lime)}
+.tfh-bottom .skill h3{margin:0;font-size:17px;line-height:1.35;font-weight:600;color:var(--ink)}
+.tfh-bottom .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tfh-bottom a.tool{display:grid;gap:12px;align-content:start;text-decoration:none;background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:26px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s var(--ease)}
+.tfh-bottom a.tool:hover{border-color:var(--lime-line);transform:translateY(-3px)}
+.tfh-bottom a.tool h3{margin:0;font-size:22px;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink)}
+.tfh-bottom a.tool h3 span{color:var(--lime)}
+.tfh-bottom a.tool p{margin:0;color:var(--muted);font-size:15px}
+.tfh-bottom a.tool .go{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.tfh-bottom a.tool:hover .go{color:var(--lime)}
+.tfh-bottom a.tool.feat{border-color:var(--lime-line);background:linear-gradient(160deg,rgba(168,224,95,.08),transparent 60%),var(--panel)}
+.tfh-bottom a.tool.feat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--lime)}
+.tfh-bottom .tag{justify-self:start;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime-line);background:var(--lime-soft);border-radius:2px;padding:3px 8px}
+.tfh-bottom .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.tfh-bottom .about .ph{aspect-ratio:16/10;max-width:100%;border:1px solid var(--line2);border-radius:2px;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") 82% 40%/cover;filter:saturate(.6)}
+.tfh-bottom .about p{color:var(--ink2);margin:16px 0 0;max-width:52ch}
+.tfh-bottom .office{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:14px}
+.tfh-bottom .photos{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:440px}
+.tfh-bottom .photos figure{margin:0;border:1px solid var(--line2);border-radius:2px;overflow:hidden;position:relative;background:var(--panel)}
+.tfh-bottom .photos figure:first-child{grid-row:span 2}
+.tfh-bottom .photos img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--ease)}
+.tfh-bottom .photos figure:hover img{transform:scale(1.04)}
+.tfh-bottom .photos figcaption{position:absolute;left:10px;bottom:10px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#E8EAED;background:rgba(0,0,0,.7);padding:4px 8px;border-radius:2px}
+.tfh-bottom .place{display:grid;gap:12px;grid-template-rows:auto 1fr}
+.tfh-bottom .addr{background:var(--panel);border:1px solid var(--line2);border-radius:2px;padding:22px;display:grid;gap:10px}
+.tfh-bottom .addr b{font-size:18px;font-weight:600;color:var(--ink)}
+.tfh-bottom .addr p{margin:0;color:var(--ink2)}
+.tfh-bottom .addr .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tfh-bottom .addr .btn{padding:11px 14px;font-size:11px}
+.tfh-bottom .map{border:1px solid var(--line2);border-radius:2px;overflow:hidden;min-height:260px;background:var(--panel)}
+.tfh-bottom .map iframe{display:block;width:100%;height:100%;min-height:260px;border:0;filter:grayscale(.85) invert(.92) hue-rotate(180deg) contrast(.9)}
+.tfh-bottom .cta{padding:96px 0;text-align:left;background:radial-gradient(80% 120% at 0% 0%,rgba(168,224,95,.10),transparent 60%),var(--bg)}
+.tfh-bottom .cta-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px}
+.tfh-bottom .cta h2{max-width:24ch}
+/* rodapé */
+.tfh-bottom footer{background:var(--sunk);border-top:1px solid var(--line2);padding:60px 0 0}
+.tfh-bottom .fgrid{display:grid;grid-template-columns:1.3fr 1fr 1.1fr 1.2fr;gap:36px}
+.tfh-bottom .fbrand img{height:52px;width:auto;display:block}
+.tfh-bottom .fbrand p{margin:14px 0 0;color:var(--muted);font-size:14px;max-width:34ch}
+.tfh-bottom footer h4{margin:0 0 14px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tfh-bottom footer ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.tfh-bottom footer li,.tfh-bottom footer address{font-style:normal;font-size:14.5px;color:var(--ink2);line-height:1.6}
+.tfh-bottom footer a{text-decoration:none;color:var(--ink2);transition:color .2s}
+.tfh-bottom footer a:hover{color:var(--lime)}
+.tfh-bottom .social{display:flex;gap:8px;margin-top:18px}
+.tfh-bottom .social a{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;color:var(--ink2)}
+.tfh-bottom .social a:hover{border-color:var(--lime);color:var(--lime)}
+.tfh-bottom .legal{margin-top:48px;border-top:1px solid var(--line2);padding:20px 0 28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;font-size:12.5px;color:var(--muted)}
+.tfh-bottom .legal b{color:var(--ink2);font-weight:500}
+.tfh-bottom .disc{font-size:12px;color:#6F7A83;padding-bottom:26px;max-width:110ch}
+@media (max-width:1100px){.tfh-bottom .grid5{grid-template-columns:repeat(3,minmax(0,1fr))}.tfh-bottom .fgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){.tfh-bottom .sec{padding:60px 0}.tfh-bottom .grid3,.tfh-bottom .about,.tfh-bottom .office{grid-template-columns:1fr}.tfh-bottom .grid5{grid-template-columns:repeat(2,minmax(0,1fr))}.tfh-bottom .photos{min-height:320px}.tfh-bottom .cta{padding:64px 0}}
+@media (max-width:520px){.tfh-bottom .grid5{grid-template-columns:1fr}.tfh-bottom .fgrid{grid-template-columns:1fr}.tfh-bottom .photos{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;min-height:0}.tfh-bottom .photos figure:first-child{grid-column:1/-1;grid-row:auto;aspect-ratio:4/3}.tfh-bottom .photos figure{aspect-ratio:3/4}}
+@media (prefers-reduced-motion:no-preference){
+  .tfh-bottom .rv{transition:transform .7s var(--ease)}
+  .tfh-bottom .rv.pre{transform:translateY(18px)}
+}
+</style>
+
+<div class="tfh-bottom">
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <div><span class="mono">O método</span><h2>O que você vai <span>dominar</span></h2></div>
+        <p>Do gráfico ao fluxo, da gestão de risco ao mindset: tudo o que um trader precisa para operar com consistência.</p>
+      </div>
+      <div class="grid5">
+        <div class="skill rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span><h3>Análise gráfica: método híbrido (leitura de fluxo e price action)</h3></div>
+        <div class="skill rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><h3>Leitura de fluxo de entrada com indicadores avançados</h3></div>
+        <div class="skill rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span><h3>Mindset e planejamento de trading</h3></div>
+        <div class="skill rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Gestão de risco para proteger seu capital</h3></div>
+        <div class="skill rv"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3>Estratégias para operar com segurança</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <div><span class="mono">Área do trader</span><h2>Ferramentas que uso <span>no dia a dia</span></h2></div>
+        <p>Com o cadastro gratuito você acessa as mesmas ferramentas de estudo e acompanhamento do mercado.</p>
+      </div>
+      <div class="grid3">
+        <a class="tool feat rv" href="/ACOESB3/"><span class="tag">Exclusivo</span><h3>Straddle <span>B3</span></h3><p>Como cada ação reagiu depois de cair ou subir 1,5% a 4,5% num pregão, com os sinais do último pregão filtrados pelas suas regras.</p><span class="go">Abrir o Straddle →</span></a>
+        <a class="tool rv" href="/central-de-noticias/"><span class="tag">Todo dia</span><h3>Central de <span>Notícias</span></h3><p>Morning Call, fluxo de notícias do mercado, cotações e agenda de balanços em um só lugar.</p><span class="go">Ler as notícias →</span></a>
+        <a class="tool rv" href="/grupo-traders/"><span class="tag">Comunidade</span><h3>Grupo de <span>traders</span></h3><p>Troque ideias com outros alunos e acompanhe o mercado junto com quem opera de verdade.</p><span class="go">Conhecer o grupo →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap about">
+      <div class="ph rv" role="img" aria-label="Fabricio Nicolau"></div>
+      <div class="rv">
+        <span class="mono">Quem ensina</span>
+        <h2>Prof. Fabricio Nicolau, <span>especialista em tape reading</span></h2>
+        <p>Trader e professor à frente da Trader Fabricio Nicolau Educacional, com mais de 500 alunos formados em cursos online e ao vivo de análise gráfica, leitura de fluxo e gestão de risco.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:24px"><a class="btn" href="/quem-e-trader-fabricio-nicolau/">Conheça a trajetória</a><a class="btn pri" href="#inscricao">Quero me inscrever</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="escritorio" style="scroll-margin-top:90px">
+    <div class="wrap">
+      <div class="head rv">
+        <div><span class="mono">Onde estamos</span><h2>Nosso escritório no <span>Batel, Curitiba</span></h2></div>
+        <p>Estamos no 13º andar do Ed. Jatobá, na Rua Pasteur, no coração do Batel.</p>
+      </div>
+      <div class="office">
+        <div class="photos rv">
+          <figure><img src="{{FACHADA}}" alt="Fachada do Edifício Jatobá, na Rua Pasteur, Batel" loading="lazy"><figcaption>Ed. Jatobá</figcaption></figure>
+          <figure><img src="{{SALA}}" alt="Sala de reuniões do escritório no 13º andar" loading="lazy"><figcaption>13º andar</figcaption></figure>
+          <figure><img src="{{ENTRADA}}" alt="Entrada do Edifício Jatobá" loading="lazy"><figcaption>Entrada</figcaption></figure>
+        </div>
+        <div class="place rv">
+          <div class="addr">
+            <span class="mono">Endereço</span>
+            <b>Ed. Jatobá · 13º andar</b>
+            <p>Rua Pasteur, 463 · Batel<br>Curitiba · PR · CEP 80250-104</p>
+            <div class="row">
+              <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Pasteur%2C+463+-+Batel%2C+Curitiba+-+PR%2C+80250-104" target="_blank" rel="noopener">Abrir no Google Maps</a>
+              <a class="btn" href="https://wa.me/5541987336281" target="_blank" rel="noopener">Falar no WhatsApp</a>
+            </div>
+          </div>
+          <div class="map"><iframe title="Mapa do escritório na Rua Pasteur, 463, Batel, Curitiba" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Rua+Pasteur,+463+-+Batel,+Curitiba+-+PR,+80250-104&amp;output=embed"></iframe></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta-in rv">
+      <div><span class="mono">Próximo passo</span><h2>Está pronto para evoluir <span>como trader?</span></h2></div>
+      <a class="btn pri" href="#inscricao" style="padding:18px 26px;font-size:13px">Quero me inscrever agora</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="fgrid">
+        <div class="fbrand">
+          <img src="/wp-content/uploads/2025/08/Logo-insight-financeiro-sem-fundo-1.webp" alt="Insight Financeiro" width="52" height="52" loading="lazy">
+          <p>Educação para quem quer operar na bolsa com método, gestão de risco e leitura real de mercado.</p>
+          <div class="social">
+            <a href="https://wa.me/5541987336281" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></a>
+            <a href="mailto:contato@traderfabricionicolau.com.br" aria-label="E-mail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h4>Navegação</h4>
+          <ul>
+            <li><a href="/quem-e-trader-fabricio-nicolau/">Quem sou</a></li>
+            <li><a href="/grupo-traders/">Grupo de traders</a></li>
+            <li><a href="/central-de-noticias/">Central de Notícias</a></li>
+            <li><a href="/ACOESB3/">Straddle B3</a></li>
+            <li><a href="/area-do-trader/">Área do trader</a></li>
+            <li><a href="/politica-de-privacidade/">Política de privacidade</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="https://wa.me/5541987336281" target="_blank" rel="noopener">(41) 98733-6281</a></li>
+            <li><a href="mailto:contato@traderfabricionicolau.com.br">contato@traderfabricionicolau.com.br</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Endereço</h4>
+          <address>Ed. Jatobá · Rua Pasteur, 463<br>13º andar · Batel<br>Curitiba · PR · CEP 80250-104</address>
+        </div>
+      </div>
+      <div class="legal">
+        <span><b>Trader Fabricio Nicolau Educacional</b> (DD Treinamentos) · CNPJ 35.719.716/0001-28</span>
+        <span>© <span id="tfh-year">2026</span> Todos os direitos reservados</span>
+      </div>
+      <p class="disc">Conteúdo educacional. Resultados passados não garantem resultados futuros e nada aqui é recomendação de investimento. Operar no mercado financeiro envolve risco de perda.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* leva o formulário do Elementor para dentro do cartão do topo */
+  function moveForm(){
+    var slot=document.getElementById('tfn-form-slot');
+    var w=document.querySelector('.tfh-form-src .elementor-widget-form')||document.querySelector('.tfh-form-src');
+    if(slot&&w&&!slot.contains(w)){slot.appendChild(w);var src=document.querySelector('.tfh-form-src');if(src&&src!==w)src.style.display='none'}
+  }
+  moveForm();document.addEventListener('DOMContentLoaded',moveForm);
+  /* menu do celular */
+  var hdr=document.getElementById('tfh-hdr'),b=document.getElementById('tfh-burger');
+  if(b&&hdr){b.addEventListener('click',function(){var o=hdr.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.setAttribute('aria-label',o?'Fechar menu':'Abrir menu')});
+    hdr.querySelectorAll('nav a,.hdr-cta a').forEach(function(a){a.addEventListener('click',function(){hdr.classList.remove('open');b.setAttribute('aria-expanded','false')})})}
+  var y=document.getElementById('tfh-year');if(y)y.textContent=new Date().getFullYear();
+  /* revelar seções ao rolar */
+  if('IntersectionObserver' in window&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    var els=[].slice.call(document.querySelectorAll('.tfh-bottom .rv'));
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){var r=el.getBoundingClientRect();if(r.top>innerHeight){el.classList.add('pre');io.observe(el)}});
+  }
+})();
+</script>
