@@ -119,7 +119,7 @@ CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="cur
 CHART = '<svg class="chart" viewBox="0 0 640 150" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="tfnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A8E05F" stop-opacity=".18"/><stop offset="1" stop-color="#A8E05F" stop-opacity="0"/></linearGradient></defs><path d="M0 130 L80 118 L160 126 L240 92 L320 100 L400 70 L480 78 L560 34 L640 22 L640 150 L0 150Z" fill="url(#tfnG)"/><path class="ln" d="M0 130 L80 118 L160 126 L240 92 L320 100 L400 70 L480 78 L560 34 L640 22" fill="none" stroke="#A8E05F" stroke-width="2.5" stroke-linejoin="round"/></svg>'
 PERKS = [
     ("Straddle B3", "como cada ação reagiu depois de cair ou subir X% num pregão"),
-    ("Sinais do último pregão", "filtrados pelas suas regras de acerto, trades e perda máxima"),
+    ("Análise do último pregão", "filtrados pelas suas regras de acerto, trades e perda máxima"),
     ("Central de Notícias", "morning call, fluxo de notícias e cotações do dia"),
 ]
 SCRIPT = """<script>(function(){var d=new Date(),p=function(n){return(n<10?'0':'')+n},e=document.getElementById('tfn-auth-today');if(e)e.textContent=p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);fetch('https://fabricionicolauxx-dev.github.io/straddle-b3/data/meta.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(m){if(!m)return;var s=String(m.last),x=document.getElementById('tfn-auth-last');if(x)x.textContent=s.slice(6,8)+'/'+s.slice(4,6)+'/'+s.slice(0,4);var a=document.getElementById('tfn-auth-acoes');if(a)a.textContent=m.acoes;}).catch(function(){});})();</script>"""
@@ -159,7 +159,7 @@ def page(active, h1a, h1b, lede, title, sub, shortcode, alt_html, perks=True):
 
 pages = {
     "659": page("login", "Bem-vindo de volta.", "Sua mesa está pronta.",
-                "Entre para abrir o Straddle B3, ver os sinais do último pregão e acompanhar a Central de Notícias.",
+                "Entre para abrir o Straddle B3, ver a análise do último pregão e acompanhar a Central de Notícias.",
                 ("Entrar", "Acesse sua conta"), "Use o usuário ou e-mail e a senha do seu cadastro.",
                 '[ultimatemember form_id="655"]', ''),
     "660": page("register", "Crie sua conta", "e acesse grátis.",

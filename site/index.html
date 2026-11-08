@@ -307,11 +307,11 @@ details[open] summary::before{content:"–"}
     <div class="tile"><div class="k">Ações analisadas</div><div class="v num" id="k-assets">–</div></div>
     <div class="tile"><div class="k">Eventos encontrados</div><div class="v num" id="k-events">–</div></div>
     <div class="tile ok"><div class="k">Passam nas suas regras</div><div class="v num" id="k-ok">–</div></div>
-    <div class="tile"><div class="k" id="k-last-label">Sinais no último pregão</div><div class="v num" id="k-sig">–</div></div>
+    <div class="tile"><div class="k" id="k-last-label">Análise do último pregão</div><div class="v num" id="k-sig">–</div></div>
   </section>
 
-  <section class="panel signals" aria-label="Sinais no último pregão">
-    <div class="panel-head" style="margin-bottom:0"><h2 id="sig-title">Sinais no último pregão</h2><span class="hint">Ações que bateram a variação no pregão mais recente dos dados. Borda verde: passa nas suas regras.</span></div>
+  <section class="panel signals" aria-label="Análise do último pregão">
+    <div class="panel-head" style="margin-bottom:0"><h2 id="sig-title">Análise do último pregão</h2><span class="hint">Ações que bateram a variação no pregão mais recente dos dados. Borda verde: passa nas suas regras.</span></div>
     <div class="sig-list" id="sig-list"></div>
     <div><button type="button" id="sig-more" hidden>Ver todos</button></div>
   </section>
@@ -553,7 +553,7 @@ function render(){
   renderHead();
   const rows=sortedRows();
   $('tbody').innerHTML=rows.length?rows.map(r=>`<tr tabindex="0" data-t="${r.t}" class="${r.ok?'ok':''}">
-    <td class="t">${r.t}${r.sig?' <span class="pill sigp" title="Bateu a variação no último pregão">sinal</span>':''}</td>
+    <td class="t">${r.t}${r.sig?' <span class="pill sigp" title="Bateu a variação no último pregão">análise</span>':''}</td>
     <td>${r.w}</td><td class="${r.rate>=S.rules.rate/100?'pos':''}">${pct(r.rate)}</td><td>${r.l}</td><td>${pct(r.lrate)}</td><td>${r.n}</td>
     <td><b class="${cls(r.sum)}">${pct(r.sum)}</b></td><td class="neg">${pct(r.maxLoss)}</td><td class="pos">${pct(r.maxGain)}</td>
     <td class="${cls(r.avg)}">${pct(r.avg)}</td><td title="Volume financeiro médio por pregão: R$ ${nf0.format(r.vol)}">${nfC.format(r.vol)}</td>
@@ -568,10 +568,10 @@ function render(){
   const sigs=S.rows.filter(r=>r.sig).sort((a,b)=>(b.ok-a.ok)||(b.rate-a.rate));
   countTo($('k-sig'),sigs.length);
   const ld=S.lastDate?d2br(S.lastDate):'–';
-  $('k-last-label').textContent='Sinais em '+ld;$('hdr-last').textContent=ld;
-  $('sig-title').textContent=`Sinais no último pregão (${ld})`;
+  $('k-last-label').textContent='Análise de '+ld;$('hdr-last').textContent=ld;
+  $('sig-title').textContent=`Análise do último pregão (${ld})`;
   const SIGMAX=12;const shown=S.allSigs?sigs:sigs.slice(0,SIGMAX);
-  $('sig-more').hidden=sigs.length<=SIGMAX;$('sig-more').textContent=S.allSigs?'Mostrar menos':'Ver todos os '+sigs.length+' sinais';
+  $('sig-more').hidden=sigs.length<=SIGMAX;$('sig-more').textContent=S.allSigs?'Mostrar menos':'Ver todas as '+sigs.length+' ações da análise';
   $('sig-list').innerHTML=sigs.length?shown.map(r=>`<button type="button" class="sig ${r.ok?'ok':''}" data-t="${r.t}"><span class="t">${r.t} <span class="${cls(r.sig.v)}">${pctS(r.sig.v)}</span></span><span class="m">${r.n} trades · acerto ${pct(r.rate)} · ganho méd. ${pct(r.avg)}${r.ok?' · <b class="pos">passa nas regras</b>':''}</span></button>`).join('')
     :`<span class="hint">Nenhuma ação ${S.side==='c'?'caiu':'subiu'} ${nf2.format(S.varPct)}% ou mais no último pregão.</span>`;
   $('sig-list').querySelectorAll('.sig').forEach(b=>b.onclick=()=>openDetail(b.dataset.t));
@@ -620,7 +620,7 @@ function openDetail(tk){
   const bars=[];for(let i=0;i<s.d.length;i++){if(s.d[i]<S.start||s.d[i]>S.end)continue;bars.push({time:d2iso(s.d[i]),open:s.o[i],high:s.h[i],low:s.l[i],close:s.c[i]})}
   ser.setData(bars);
   const marks=tr.map(t=>({time:d2iso(t.d),position:S.side==='c'?'belowBar':'aboveBar',color:t.r>0?up:dn,shape:S.side==='c'?'arrowUp':'arrowDown',text:pctS(t.r)}));
-  if(row&&row.sig)marks.push({time:d2iso(S.lastDate),position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',text:'sinal'});
+  if(row&&row.sig)marks.push({time:d2iso(S.lastDate),position:S.side==='c'?'belowBar':'aboveBar',color:cssv('--accent'),shape:'circle',text:'análise'});
   ser.setMarkers(marks);chart.timeScale().fitContent();
   ro=new ResizeObserver(()=>chart&&chart.applyOptions({width:el.clientWidth,height:el.clientHeight}));ro.observe(el);
 }
