@@ -72,14 +72,14 @@ html,body{background:#000!important;margin:0}
 
 /* hero */
 .tfh .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line2)}
-.tfh .hero::before{content:"";position:absolute;inset:0;background:url("/wp-content/uploads/2025/08/banner-desk-PRONTO-1.png") right -4% center/auto 104% no-repeat;filter:saturate(.6) brightness(.85);opacity:1;transform-origin:85% 50%}
-.tfh .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,#000 30%,rgba(0,0,0,.86) 48%,rgba(0,0,0,.35) 66%,rgba(0,0,0,0) 82%),linear-gradient(0deg,#000 0%,transparent 22%)}
-.tfh .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,430px) minmax(220px,.62fr);gap:44px;align-items:center;padding-top:72px;padding-bottom:84px;}
+.tfh .hero::before{content:"";position:absolute;top:0;bottom:0;right:var(--tfh-pr,0px);left:var(--tfh-px,62%);background:url("/wp-content/uploads/2026/11/hero-fabricio-nicolau.webp") center bottom/contain no-repeat;filter:saturate(.8) brightness(.95);opacity:1;transform-origin:50% 100%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 90%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 90%,transparent 100%)}
+.tfh .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,#000 0%,transparent 14%)}
+.tfh .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,390px) minmax(0,.9fr);gap:44px;align-items:center;padding-top:72px;padding-bottom:84px;}
 .tfh .hero-space{min-height:1px}
-@media (max-width:1280px){.tfh .hero-in{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}.tfh .hero-space{display:none}.tfh .hero::after{background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 45%,rgba(0,0,0,.55) 100%),linear-gradient(0deg,#000 0%,transparent 25%)}}
+@media (max-width:1280px){.tfh h1{font-size:clamp(34px,4.6vw,56px)}.tfh .hero::before{left:0;background-position:right bottom;background-size:auto 100%;opacity:.45;-webkit-mask-image:none;mask-image:none}.tfh .hero-in{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}.tfh .hero-space{display:none}.tfh .hero::after{background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 45%,rgba(0,0,0,.55) 100%),linear-gradient(0deg,#000 0%,transparent 25%)}}
 .tfh .pill{display:inline-flex;align-items:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid var(--lime);background:var(--lime-soft);border-radius:2px;padding:8px 14px}
 .tfh .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--lime)}
-.tfh h1{margin:22px 0 0;font-size:clamp(36px,5.2vw,68px);line-height:1.02;font-weight:600;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
+.tfh h1{margin:22px 0 0;font-size:clamp(34px,3.3vw,62px);line-height:1.02;font-weight:600;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
 .tfh h1 span{display:block;color:var(--lime)}
 .tfh .lede{margin:22px 0 0;max-width:56ch;font-size:18px;line-height:1.65;color:var(--ink2)}
 .tfh .lede b{color:var(--ink);font-weight:500}
@@ -122,7 +122,7 @@ html,body{background:#000!important;margin:0}
 .tfh .stat span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 
 @media (max-width:980px){
-  .tfh .hero::before{background-image:url("/wp-content/uploads/2025/08/banner-MOB-PRONTO-1.png");background-position:70% center;background-size:cover;opacity:.5}
+  .tfh .hero::before{background-position:center top;background-size:cover;opacity:.42}
   .tfh .hero::after{background:linear-gradient(0deg,#000 0%,rgba(0,0,0,.82) 45%,rgba(0,0,0,.65) 100%)}
   .tfh .hero-in{grid-template-columns:1fr;gap:34px;padding-top:44px;padding-bottom:52px}
   .tfh .stats{grid-template-columns:1fr}
@@ -189,6 +189,12 @@ html,body{background:#000!important;margin:0}
       <div class="hero-space" aria-hidden="true"></div>
     </div>
   </section>
+  <script>(function(){
+    function place(){var hero=document.querySelector('.tfh .hero'),card=document.querySelector('.tfh .formcard');if(!hero||!card)return;
+      if(innerWidth>1280){var hr=hero.getBoundingClientRect(),x=card.getBoundingClientRect().right-hr.left-24,avail=hr.width-x,w=Math.min(avail,hr.height*934/1012),off=Math.max(0,(avail-w)/2);hero.style.setProperty('--tfh-px',Math.round(x+off)+'px');hero.style.setProperty('--tfh-pr',Math.round(avail-w-off)+'px')}else{hero.style.removeProperty('--tfh-px');hero.style.removeProperty('--tfh-pr')}}
+    place();addEventListener('resize',place);addEventListener('load',place);document.addEventListener('DOMContentLoaded',place);
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(place);setTimeout(place,1500);
+  })();</script>
 
   <div class="tfh-wrap" style="padding:0">
     <div class="stats">
