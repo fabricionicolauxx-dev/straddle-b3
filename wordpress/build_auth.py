@@ -9,7 +9,19 @@ CSS = r"""<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=
  min-height:100vh;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;padding-bottom:56px;-webkit-font-smoothing:antialiased}
 .tfn-auth *{box-sizing:border-box}
 .tfn-auth .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.tfn-auth .hdr{background:var(--panel);border-bottom:1px solid var(--line2)}
+.tfn-auth .hdr{--panel:#0D1115;--panel2:#11161B;--line:#2A333B;--line2:#1C2228;--ink:#E8EAED;--muted:#8A949D;--lime:#A8E05F;--lime-soft:rgba(168,224,95,.12);background:var(--panel);border-bottom:1px solid var(--line2)}
+html[data-tfn-theme=light] .tfn-auth{--bg:#F4F6F7;--panel:#FFFFFF;--panel2:#F0F3F5;--sunk:#F7F9FA;--line:#D3DAE0;--line2:#E3E8EC;--ink:#0D1115;--ink2:#2F3943;--muted:#5D6772;--lime:#4F8A12;--lime-soft:rgba(79,138,18,.10);--lime-line:rgba(79,138,18,.40);--red:#D13447}
+html[data-tfn-theme=light] .tfn-auth .mc{background:linear-gradient(180deg,#FFFFFF 0%,#F7F9FA 100%)}
+html[data-tfn-theme=light] .tfn-auth .mc-r{background:rgba(240,243,245,.6)}
+html[data-tfn-theme=light] .tfn-auth svg.chart path.ln{stroke:#4F8A12}
+html[data-tfn-theme=light] .tfn-auth .um .um-button:not(.um-alt){color:#FFFFFF!important}
+html[data-tfn-theme=light] .tfn-auth .um .um-field-error,html[data-tfn-theme=light] .tfn-auth .um .um-notice.err{color:#FFFFFF!important}
+html[data-tfn-theme=light] .tfn-auth .um input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #F7F9FA inset!important}
+.tfn-auth,.tfn-auth .mc,.tfn-auth .mc-r,.tfn-auth .um input{transition:background-color .3s,border-color .3s,color .3s}
+.tfn-auth .tt{width:42px;height:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:transparent;cursor:pointer;color:var(--ink)}
+.tfn-auth .tt .i-sun{display:none}
+html[data-tfn-theme=light] .tfn-auth .tt .i-sun{display:block}
+html[data-tfn-theme=light] .tfn-auth .tt .i-moon{display:none}
 .tfn-auth .hdr-in{max-width:1200px;margin:0 auto;padding:20px max(20px,3vw);display:flex;align-items:center;gap:18px 22px;flex-wrap:wrap}
 .tfn-auth .logo{display:flex;align-items:center}
 .tfn-auth .logo img{height:48px;width:auto;display:block}
@@ -121,6 +133,7 @@ def page(active, h1a, h1b, lede, title, sub, shortcode, alt_html, perks=True):
   <span class="vsep" aria-hidden="true"></span><span class="hdr-label">Área do trader</span>
   <nav class="nav" aria-label="Seções">{nav}</nav>
   <a class="nb home" href="/">Início</a>
+  <button type="button" class="nb tt" onclick="window.tfnToggleTheme&&window.tfnToggleTheme()" aria-label="Alternar entre tema claro e escuro" title="Tema claro / escuro"><svg class="i-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="i-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
 </div></header>
 <div class="wrapc"><section class="mc">
   <div class="mc-l">
