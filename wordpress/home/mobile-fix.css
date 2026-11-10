@@ -1,0 +1,23 @@
+/* Celular: aviso de cookies compacto + formulário mais perto do topo */
+@media (max-width:767px){
+  #cookie-notice{left:10px!important;right:88px!important;bottom:14px!important;width:auto!important;min-width:0!important;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.55);background:rgba(16,16,18,.97)!important;border:1px solid rgba(168,224,95,.35);font-family:"IBM Plex Sans",system-ui,sans-serif}
+  #cookie-notice .cookie-notice-container{padding:9px 10px 9px 12px!important;display:flex!important;align-items:center;gap:10px;text-align:left!important}
+  #cookie-notice #cn-notice-text{font-size:0!important;margin:0!important;flex:1;line-height:1.3;color:#ddd}
+  #cookie-notice #cn-notice-text::before{content:"Usamos cookies para melhorar sua experiência.";font-size:11.5px}
+  #cookie-notice #cn-notice-buttons{margin:0!important;display:flex!important;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+  #cookie-notice #cn-accept-cookie{font-size:0!important;margin:0!important;padding:7px 16px!important;background:#A8E05F!important;color:#000!important;border-radius:8px;border:0;line-height:1}
+  #cookie-notice #cn-accept-cookie::before{content:"OK";font-size:12.5px;font-weight:700;letter-spacing:.04em}
+  #cookie-notice #cn-more-info{font-size:0!important;background:none!important;padding:0!important;margin:0!important;border:0;line-height:1}
+  #cookie-notice #cn-more-info::before{content:"Privacidade";font-size:10px;color:#aaa;text-decoration:underline}
+  #cookie-notice #cn-close-notice{display:none!important}
+
+  .tfh .hero-in{padding-top:22px!important;gap:18px!important}
+  .tfh .pill{margin-bottom:12px;font-size:10px;padding:6px 10px}
+  .tfh h1{font-size:clamp(27px,8vw,32px)!important;line-height:1.06!important;margin-bottom:12px}
+  .tfh .lede{font-size:14.5px!important;line-height:1.5;margin:0}
+  .tfh .sig{display:none!important}
+  .tfh .formcard .sub{display:none}
+  .tfh .formcard h2{margin-bottom:12px}
+}
+@media (max-width:600px){.tfh .tape{display:none!important}}
+@media (max-width:767px){.tfh .hero-in{padding-top:16px!important;gap:14px!important}.tfh .pill{display:none!important}.tfh h1{font-size:clamp(26px,7.6vw,30px)!important;margin-bottom:10px}.tfh .lede{font-size:14px!important;line-height:1.45}.tfh .formcard{padding-top:16px!important;padding-bottom:14px!important}.tfh .formcard .mono{display:none}}
