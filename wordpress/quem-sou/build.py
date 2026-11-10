@@ -130,7 +130,7 @@ content = f"""
       <div class="head rv"><div><span class="mono">Onde aplicar</span><h2>Um método, <span>três mercados</span></h2></div></div>
       <div class="markets">
         <div class="market rv"><span class="ico">{ICON['b3']}</span><h3>Bolsa brasileira</h3></div>
-        <div class="market rv"><span class="ico">{ICON['cripto']}</span><h3>Mercado cripto</h3></div>
+        <div class="market rv"><span class="ico">{ICON['cripto']}</span><h3>Ouro e commodities</h3></div>
         <div class="market rv"><span class="ico">{ICON['inter']}</span><h3>Mercado internacional</h3></div>
       </div>
     </div>
