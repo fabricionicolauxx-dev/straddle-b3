@@ -3,7 +3,7 @@
 const API = (window.CRMK||{}).api;
 const TOKEN = (window.CRMK||{}).token;
 const STAGES=[["Novo","--s-novo"],["Contatado","--s-contatado"],["Respondeu","--s-respondeu"],["Chamada marcada","--s-chamada"],
- ["Proposta enviada","--s-proposta"],["Quase fechando","--s-quase"],["Fechou","--s-fechou"],["Perdido","--s-perdido"]];
+ ["Proposta enviada","--s-proposta"],["Quase fechando","--s-quase"],["Em pausa","--s-pausa"],["Fechou","--s-fechou"],["Perdido","--s-perdido"]];
 const ORIGENS=["Google","Aluno Wall","YouTube","Discord","Indicação","Outro"];
 const TIPOS=["Chamar no WhatsApp","Ligar","Reunião","Follow-up"];
 const ICON={
@@ -23,7 +23,7 @@ const br=iso=>iso&&/^\d{4}-\d{2}-\d{2}$/.test(iso)?iso.split("-").reverse().slic
 const fone=n=>{n=(n||"").replace(/\D/g,"");if(n.length===11)return`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`;if(n.length===10)return`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`;return n};
 const waLink=n=>{n=(n||"").replace(/\D/g,"");return n?"https://wa.me/"+(n.length<=11?"55":"")+n:""};
 let tStatus; const status=(t,err)=>{const s=$("#crmk-status");s.textContent=t||"";s.className="note"+(err?" err":"");clearTimeout(tStatus);if(t&&!err)tStatus=setTimeout(()=>s.textContent="",3500)};
-const fechado=l=>["Fechou","Perdido"].includes(l.etapa);
+const fechado=l=>["Fechou","Perdido","Em pausa"].includes(l.etapa);
 const guardar=(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}};
 const ler=k=>{try{return localStorage.getItem(k)}catch(_){return null}};
 
@@ -79,7 +79,7 @@ function renderOrigens(){
 }
 function card(l){
   const c=`var(${(STAGES.find(s=>s[0]===l.etapa)||STAGES[0])[1]})`, h=hoje(), r=lemb(l), agora=vencido(r);
-  const due=l.dataProximo?el("span",{class:"due"+(l.dataProximo<h&&!fechado(l)?" late":l.dataProximo===h?" today":"")},br(l.dataProximo)):null;
+  const due=l.dataProximo?el("span",{class:"due"+(l.dataProximo<h&&!["Fechou","Perdido"].includes(l.etapa)?" late":l.dataProximo===h?" today":"")},br(l.dataProximo)):null;
   const sino=el("button",{class:"bellchip"+(r?" on":"")+(agora?" now":""),type:"button","aria-label":r?"Lembrete: "+r.tipo+" "+quandoCurto(r):"Criar lembrete",title:r?r.tipo+(r.nota?" · "+r.nota:""):"Criar lembrete",html:ICON.bell+(r?"<span>"+quandoCurto(r)+"</span>":"")});
   sino.addEventListener("pointerdown",ev=>ev.stopPropagation());
   sino.addEventListener("click",ev=>{ev.stopPropagation();abrirLembrete(l)});

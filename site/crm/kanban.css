@@ -3,7 +3,7 @@
   --bg:#f3f5f8; --panel:#ffffff; --ink:#152033; --muted:#5d6a80; --line:#dde3ec; --soft:#e9eef5;
   --accent:#0e7c6b; --accent-ink:#ffffff; --danger:#c2362b; --warn:#b26a00; --bell:#d97706; --bell-soft:#fff4e0;
   --s-novo:#7b8798; --s-contatado:#2f6fdb; --s-respondeu:#c99400; --s-chamada:#e0691a;
-  --s-proposta:#7a4fd6; --s-quase:#0f9b8e; --s-fechou:#1f9d48; --s-perdido:#c2362b;
+  --s-proposta:#7a4fd6; --s-quase:#0f9b8e; --s-pausa:#5b7a99; --s-fechou:#1f9d48; --s-perdido:#c2362b;
   --shadow:0 1px 2px rgba(21,32,51,.06),0 4px 14px rgba(21,32,51,.06);
   --veil:rgba(10,15,25,.45);
   --f-display:"Space Grotesk",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -15,7 +15,7 @@ body.admin-bar #crmk{top:var(--wp-admin--admin-bar--height,32px)}
   --bg:#0f141c; --panel:#171e29; --ink:#e6ebf3; --muted:#93a0b5; --line:#263142; --soft:#1e2733;
   --accent:#2bb5a0; --accent-ink:#06201b; --danger:#ef6a5e; --warn:#e7a43a; --bell:#f5a524; --bell-soft:#3a2a10;
   --s-novo:#8d99ab; --s-contatado:#5c93f0; --s-respondeu:#e2b53a; --s-chamada:#f08a45;
-  --s-proposta:#a07ef0; --s-quase:#2bc2b2; --s-fechou:#3fc36b; --s-perdido:#ef6a5e;
+  --s-proposta:#a07ef0; --s-quase:#2bc2b2; --s-pausa:#8aa6c4; --s-fechou:#3fc36b; --s-perdido:#ef6a5e;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); --veil:rgba(0,0,0,.6); color-scheme:dark}
 #crmk *,#crmk *::before,#crmk *::after{box-sizing:border-box}
 #crmk h1,#crmk h2,#crmk h3{color:var(--ink);text-transform:none;line-height:1.2;margin:0}
