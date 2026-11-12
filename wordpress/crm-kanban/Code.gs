@@ -8,8 +8,8 @@ const ABA_CRM = 'CRM';
 const ABA_FORM = 'Leads página inicial';
 const TZ = 'America/Sao_Paulo';
 const ETAPAS = ['Novo', 'Contatado', 'Respondeu', 'Chamada marcada', 'Proposta enviada', 'Quase fechando', 'Fechou', 'Perdido'];
-// Colunas da aba CRM (A..I)
-const COLS = ['nome', 'whatsapp', 'origem', 'entrada', 'etapa', 'ultimoContato', 'proximoPasso', 'dataProximo', 'obs'];
+// Colunas da aba CRM (A..J). J = Lembrete no formato "AAAA-MM-DD HH:MM|Tipo|Nota"
+const COLS = ['nome', 'whatsapp', 'origem', 'entrada', 'etapa', 'ultimoContato', 'proximoPasso', 'dataProximo', 'obs', 'lembrete'];
 const DATAS = ['entrada', 'ultimoContato', 'dataProximo'];
 
 function resposta_(obj) {
@@ -51,6 +51,7 @@ function paraCelula_(campo, v) {
     return m ? new Date(+m[1], +m[2] - 1, +m[3], 12) : '';
   }
   if (campo === 'whatsapp') return v ? "'" + v.replace(/\D/g, '') : '';
+  if (campo === 'lembrete') return v ? "'" + v : '';
   return v;
 }
 
