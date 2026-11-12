@@ -55,7 +55,8 @@ async function carregar(silencioso){
 }
 async function salvar(l,campos,desfazer,msg){
   salvando++; const c=root.querySelector(`.card[data-row="${l.row}"]`); if(c)c.classList.add("saving");
-  try{await api({acao:"atualizar",row:l.row,nome:l.nome,campos}); status("Salvo na planilha: "+msg); return true}
+  try{await api({acao:"atualizar",row:l.row,nome:l.nome,campos}); status("Salvo na planilha: "+msg);
+    const atual=leads.find(x=>x.row===l.row); if(atual)Object.assign(atual,campos); setTimeout(()=>carregar(true),400); return true}
   catch(e){desfazer&&desfazer(); status("Não salvou: "+e.message+". Clique em Atualizar e tente de novo.",true); return false}
   finally{salvando--; render()}
 }
