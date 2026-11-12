@@ -230,10 +230,17 @@ $("#crmk-lembretes").addEventListener("click",abrirLista);
 const AVISADOS="crmk-avisados";
 const jaAvisado=(l,r)=>{try{return(JSON.parse(ler(AVISADOS)||"[]")).includes(l.row+"|"+r.raw)}catch(_){return false}};
 const marcarAvisado=(l,r)=>{let a=[];try{a=JSON.parse(ler(AVISADOS)||"[]")}catch(_){}a.push(l.row+"|"+r.raw);guardar(AVISADOS,JSON.stringify(a.slice(-200)))};
-let ctx=null;
-function destravarSom(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume()}catch(_){}}
-document.addEventListener("pointerdown",destravarSom,{once:true});
-function tocar(){try{if(!ctx)return;const t=ctx.currentTime;[[880,0],[1320,.18],[880,.6],[1320,.78]].forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.25,t+d+.02);g.gain.exponentialRampToValueAtTime(.001,t+d+.5);o.connect(g).connect(ctx.destination);o.start(t+d);o.stop(t+d+.55)})}catch(_){}}
+/* som: o Chrome só libera áudio depois de um clique ou tecla na página */
+let ctx=null, somLigado=ler("crmk-som")!=="off", tocando=null;
+const somAtivo=()=>!!ctx&&ctx.state==="running";
+function destravarSom(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume().then(pintarSom,pintarSom)}catch(_){}pintarSom()}
+["pointerdown","keydown","touchstart"].forEach(ev=>document.addEventListener(ev,destravarSom,{passive:true}));
+function bipe(){if(!ctx)return;const t=ctx.currentTime;[[880,0],[1320,.16],[1760,.32],[880,.7],[1320,.86],[1760,1.02]].forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="triangle";o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.7,t+d+.02);g.gain.exponentialRampToValueAtTime(.001,t+d+.45);o.connect(g).connect(ctx.destination);o.start(t+d);o.stop(t+d+.5)})}
+function tocar(){try{pararSom();if(!somLigado||!ctx)return;if(ctx.state==="suspended")ctx.resume();let n=0;bipe();tocando=setInterval(()=>{if(++n>=4||!emAlerta){pararSom();return}bipe()},2200)}catch(_){}}
+function pararSom(){clearInterval(tocando);tocando=null}
+const somBtn=el("button",{id:"crmk-som",class:"btn",type:"button",onclick:()=>{destravarSom();if(somLigado&&somAtivo()){somLigado=false}else{somLigado=true;setTimeout(()=>{try{bipe()}catch(_){}},120)}guardar("crmk-som",somLigado?"on":"off");pintarSom()}});
+function pintarSom(){const ok=somLigado&&somAtivo();somBtn.className="btn"+(somLigado&&!somAtivo()?" bellbtn":"");somBtn.textContent=!somLigado?"🔇 Som desligado":ok?"🔊 Som ativo":"🔈 Ativar som";somBtn.title=ok?"Clique para desligar o som dos lembretes":"Clique uma vez para liberar o som dos lembretes (o navegador exige)"}
+$("#crmk-tema").before(somBtn); pintarSom();
 function pedirNotificacao(){try{if("Notification" in window&&Notification.permission==="default")Notification.requestPermission()}catch(_){}}
 function notificar(l,r){try{if("Notification" in window&&Notification.permission==="granted"&&document.hidden){const n=new Notification(r.tipo+": "+l.nome,{body:(r.nota||l.proximoPasso||"")+" · "+r.hora,tag:"crmk-"+l.row,requireInteraction:true});n.onclick=()=>{window.focus();n.close()}}}catch(_){}}
 let tituloOrig=document.title, piscar=null;
@@ -253,6 +260,7 @@ function mostrarAlerta(l,r){
     el("div",{class:"sino",html:ICON.bell}),
     el("div",{class:"quando"},"Lembrete · "+quandoCurto(r)),
     el("div",{class:"tipo"},r.tipo),
+    somLigado&&!somAtivo()?el("button",{class:"chip",type:"button",onclick:ev=>{destravarSom();setTimeout(tocar,150);ev.currentTarget.remove()}},"🔈 O som estava bloqueado: toque aqui para ouvir"):null,
     el("h3",{},l.nome),
     l.whatsapp?el("div",{class:"who"},fone(l.whatsapp)):null,
     r.nota?el("div",{},r.nota):(l.proximoPasso?el("div",{class:"muted"},l.proximoPasso):null),
@@ -261,7 +269,7 @@ function mostrarAlerta(l,r){
       el("button",{class:"btn",type:"button",onclick:()=>adiar(10)},"Adiar 10 min"),
       el("button",{class:"btn",type:"button",onclick:()=>adiar(60)},"Adiar 1 h"),
       el("button",{class:"btn bellbtn",type:"button",onclick:async()=>{fecharPop();l.lembrete="";await salvar(l,{lembrete:""},null,"lembrete concluído")}},"Feito ✓"))),
-    "alerta",()=>{emAlerta=false;pararTitulo();setTimeout(checarLembretes,800)});
+    "alerta",()=>{emAlerta=false;pararSom();pararTitulo();setTimeout(checarLembretes,800)});
   pop.animate&&pop.animate([{transform:"translateX(0)"},{transform:"translateX(-8px) rotate(-1deg)"},{transform:"translateX(8px) rotate(1deg)"},{transform:"translateX(-5px)"},{transform:"translateX(0)"}],{duration:500,delay:350});
 }
 
