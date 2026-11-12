@@ -1,0 +1,29 @@
+<!-- wp:html -->
+<!-- CRM Kanban: código em straddle-b3/site/crm (GitHub Pages). Mudou o código? Troque o ?v= abaixo. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fabricionicolauxx-dev.github.io/straddle-b3/crm/kanban.css?v=__V__">
+
+<div id="crmk" data-theme="light">
+  <header class="wrap">
+    <div class="top">
+      <h1>Funil de Leads<small>Mentoria Day Trade · ligado à planilha Leads Straddle B3</small></h1>
+      <div class="stats" id="crmk-stats"></div>
+    </div>
+    <div class="tools">
+      <input id="crmk-q" class="search" type="search" placeholder="Buscar nome, telefone ou nota" aria-label="Buscar lead">
+      <div id="crmk-origens" class="tools" role="group" aria-label="Filtrar por origem"></div>
+      <button id="crmk-add" class="btn primary" type="button">+ Novo lead</button>
+      <button id="crmk-lembretes" class="btn" type="button"></button>
+      <button id="crmk-reload" class="btn" type="button">Atualizar</button>
+      <button id="crmk-tema" class="btn" type="button"></button>
+    </div>
+    <div id="crmk-status" class="note" role="status">Carregando a planilha…</div>
+  </header>
+  <main id="crmk-board" class="board wrap" aria-label="Quadro de etapas"></main>
+  <div id="crmk-drawer"></div>
+  <div id="crmk-pop"></div>
+</div>
+
+<script>window.CRMK={api:"__API_URL__",token:"__TOKEN__"};</script>
+<script src="https://fabricionicolauxx-dev.github.io/straddle-b3/crm/kanban.js?v=__V__"></script>
+<!-- /wp:html -->
