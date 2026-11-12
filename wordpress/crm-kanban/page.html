@@ -123,7 +123,7 @@ async function carregar(silencioso){
     const r=await fetch(API+"?token="+encodeURIComponent(TOKEN)+"&t="+Date.now()); const j=await r.json();
     if(!j.ok)throw new Error(j.erro);
     leads=j.leads; ultimaCarga=Date.now(); render();
-    if(!silencioso)status("Atualizado agora");
+    if(!silencioso)status("Atualizado agora"); else if($("#crmk-status").textContent.indexOf("Carregando")===0)status("");
   }catch(e){status("Não consegui ler a planilha. Confira a internet e clique em Atualizar.",true)}
 }
 
