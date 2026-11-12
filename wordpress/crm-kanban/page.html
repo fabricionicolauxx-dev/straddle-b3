@@ -1,0 +1,247 @@
+<!-- CRM Kanban (página privada, protegida por senha). Lê e grava a aba CRM da planilha "Leads Straddle B3" pelo Apps Script. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+#crmk{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#152033; --muted:#5d6a80; --line:#dde3ec; --soft:#e9eef5;
+  --accent:#0e7c6b; --accent-ink:#ffffff; --danger:#c2362b; --warn:#b26a00;
+  --s-novo:#7b8798; --s-contatado:#2f6fdb; --s-respondeu:#c99400; --s-chamada:#e0691a;
+  --s-proposta:#7a4fd6; --s-quase:#0f9b8e; --s-fechou:#1f9d48; --s-perdido:#c2362b;
+  --shadow:0 1px 2px rgba(21,32,51,.06),0 4px 14px rgba(21,32,51,.06);
+  --f-display:"Space Grotesk",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;
+  position:fixed;inset:0;z-index:99990;display:flex;flex-direction:column;overflow:hidden;text-align:left;
+}
+@media (prefers-color-scheme:dark){#crmk{
+  --bg:#0f141c; --panel:#171e29; --ink:#e6ebf3; --muted:#93a0b5; --line:#263142; --soft:#1e2733;
+  --accent:#2bb5a0; --accent-ink:#06201b; --danger:#ef6a5e; --warn:#e7a43a;
+  --s-novo:#8d99ab; --s-contatado:#5c93f0; --s-respondeu:#e2b53a; --s-chamada:#f08a45;
+  --s-proposta:#a07ef0; --s-quase:#2bc2b2; --s-fechou:#3fc36b; --s-perdido:#ef6a5e;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark}}
+#crmk *,#crmk *::before,#crmk *::after{box-sizing:border-box}
+#crmk h1,#crmk h2,#crmk h3{color:var(--ink);text-transform:none;line-height:1.2;margin:0}
+#crmk .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#crmk header{padding-block:calc(14px + env(safe-area-inset-top,0px)) 8px;display:flex;flex-direction:column;gap:10px;background:transparent;position:static}
+#crmk .top{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+#crmk h1{font-family:var(--f-display);font-size:22px;letter-spacing:-.01em}
+#crmk h1 small{display:block;font-family:var(--f-body);font-weight:400;font-size:12.5px;color:var(--muted);margin-top:2px}
+#crmk .stats{display:flex;flex-wrap:wrap;gap:8px}
+#crmk .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 12px;min-width:92px}
+#crmk .stat b{display:block;font-family:var(--f-display);font-size:19px;font-variant-numeric:tabular-nums}
+#crmk .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+#crmk .stat.alert b{color:var(--danger)}
+#crmk .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#crmk input,#crmk select,#crmk textarea,#crmk button{font:inherit;color:inherit;margin:0;box-shadow:none;text-transform:none;letter-spacing:normal}
+#crmk .search{flex:1 1 220px;min-width:0;max-width:340px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;height:auto}
+#crmk .chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;font-size:12.5px}
+#crmk .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#crmk .btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500}
+#crmk .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#crmk .btn.danger{color:var(--danger)}
+#crmk .btn:disabled{opacity:.6;cursor:wait}
+#crmk :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#crmk .note{font-size:12.5px;color:var(--muted);min-height:1em}
+#crmk .note.err{color:var(--danger)}
+#crmk .board{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;padding-block:6px calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:stretch}
+#crmk .col{flex:0 0 272px;display:flex;flex-direction:column;background:var(--soft);border-radius:12px;min-height:0;border-top:4px solid var(--c)}
+#crmk .col.over{outline:2px dashed var(--c);outline-offset:-2px}
+#crmk .col-h{display:flex;align-items:center;gap:8px;padding:10px 12px 8px}
+#crmk .col-h .dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
+#crmk .col-h h2{font-family:var(--f-display);font-size:14px;font-weight:600;flex:1}
+#crmk .col-h .n{font-family:var(--f-mono);font-size:12px;color:var(--muted);background:var(--panel);border-radius:999px;padding:1px 8px}
+#crmk .list{flex:1;overflow-y:auto;padding:4px 10px 12px;display:flex;flex-direction:column;gap:8px;min-height:60px}
+#crmk .empty{font-size:12px;color:var(--muted);text-align:center;padding:14px 4px;border:1px dashed var(--line);border-radius:8px}
+#crmk .card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--c);border-radius:9px;padding:10px 11px;box-shadow:var(--shadow);cursor:grab;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;gap:6px;touch-action:manipulation}
+#crmk .card.dragging{opacity:.35}
+#crmk .card.saving{opacity:.6}
+#crmk .row1{display:flex;gap:6px;align-items:flex-start;justify-content:space-between}
+#crmk .nm{font-weight:600;line-height:1.25;min-width:0;overflow-wrap:anywhere}
+#crmk .tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px;white-space:nowrap}
+#crmk .np{font-size:12.5px;color:var(--muted);line-height:1.35;overflow-wrap:anywhere}
+#crmk .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+#crmk .due{border-radius:4px;padding:1px 6px;background:var(--soft);color:var(--ink)}
+#crmk .due.late{background:var(--danger);color:var(--panel)}
+#crmk .due.today{background:var(--warn);color:var(--panel)}
+#crmk .ghost{position:fixed;z-index:99995;pointer-events:none;transform:rotate(2deg);box-shadow:0 12px 30px rgba(0,0,0,.25)}
+#crmk .ph{height:46px;border:2px dashed var(--c);border-radius:9px;opacity:.6;flex:none}
+#crmk .drawer-bg{position:fixed;inset:0;background:rgba(10,15,25,.45);z-index:99996;display:flex;justify-content:flex-end}
+#crmk .drawer{background:var(--panel);width:min(440px,100%);height:100%;overflow-y:auto;padding:calc(20px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) 18px;display:flex;flex-direction:column;gap:12px}
+#crmk .drawer h3{font-family:var(--f-display);font-size:18px}
+#crmk .f{display:flex;flex-direction:column;gap:4px}
+#crmk .f label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:400}
+#crmk .f input,#crmk .f select,#crmk .f textarea{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;height:auto}
+#crmk .f textarea{min-height:110px;resize:vertical;line-height:1.4}
+#crmk .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#crmk .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+#crmk .wa{color:var(--accent);font-weight:500;text-decoration:none}
+#crmk .muted{color:var(--muted);font-size:12px}
+@media (max-width:480px){#crmk .grid2{grid-template-columns:1fr}#crmk .col{flex-basis:84vw}#crmk .stat{min-width:0;flex:1 1 30%}}
+</style>
+
+<div id="crmk">
+  <header class="wrap">
+    <div class="top">
+      <h1>Funil de Leads<small>Mentoria Day Trade · ligado à planilha Leads Straddle B3</small></h1>
+      <div class="stats" id="crmk-stats"></div>
+    </div>
+    <div class="tools">
+      <input id="crmk-q" class="search" type="search" placeholder="Buscar nome, telefone ou nota" aria-label="Buscar lead">
+      <div id="crmk-origens" class="tools" role="group" aria-label="Filtrar por origem"></div>
+      <button id="crmk-add" class="btn primary" type="button">+ Novo lead</button>
+      <button id="crmk-reload" class="btn" type="button">Atualizar</button>
+    </div>
+    <div id="crmk-status" class="note" role="status">Carregando a planilha…</div>
+  </header>
+  <main id="crmk-board" class="board wrap" aria-label="Quadro de etapas"></main>
+  <div id="crmk-drawer"></div>
+</div>
+
+<script>
+(function(){
+const API = "__API_URL__";
+const TOKEN = "__TOKEN__";
+const STAGES=[["Novo","--s-novo"],["Contatado","--s-contatado"],["Respondeu","--s-respondeu"],["Chamada marcada","--s-chamada"],
+ ["Proposta enviada","--s-proposta"],["Quase fechando","--s-quase"],["Fechou","--s-fechou"],["Perdido","--s-perdido"]];
+const ORIGENS=["Google","Aluno Wall","YouTube","Discord","Indicação","Outro"];
+const root=document.getElementById("crmk");
+document.documentElement.style.overflow="hidden";
+let leads=[], filtroOrigem=null, busca="", drag=null, salvando=0, ultimaCarga=0;
+const $=(s,r=root)=>r.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==="class")e.className=v;else if(x==="style")e.style.cssText=v;else if(x.startsWith("on"))e.addEventListener(x.slice(2),v);else if(v!==undefined&&v!==null&&v!==false)e.setAttribute(x,v)}for(const c of k.flat())if(c!=null)e.append(c);return e};
+const hoje=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const br=iso=>iso&&/^\d{4}-\d{2}-\d{2}$/.test(iso)?iso.split("-").reverse().slice(0,2).join("/"):iso||"";
+const fone=n=>{n=(n||"").replace(/\D/g,"");if(n.length===11)return`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`;if(n.length===10)return`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`;return n};
+let tStatus; const status=(t,err)=>{const s=$("#crmk-status");s.textContent=t||"";s.className="note"+(err?" err":"");clearTimeout(tStatus);if(t&&!err)tStatus=setTimeout(()=>s.textContent="",3500)};
+const fechado=l=>["Fechou","Perdido"].includes(l.etapa);
+
+async function api(body){
+  const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({token:TOKEN},body)),headers:{"Content-Type":"text/plain;charset=utf-8"}});
+  const j=await r.json(); if(!j.ok)throw new Error(j.erro||"erro"); return j;
+}
+async function carregar(silencioso){
+  if(drag&&drag.active||salvando||$("#crmk-drawer").firstChild&&silencioso)return;
+  try{
+    const r=await fetch(API+"?token="+encodeURIComponent(TOKEN)+"&t="+Date.now()); const j=await r.json();
+    if(!j.ok)throw new Error(j.erro);
+    leads=j.leads; ultimaCarga=Date.now(); render();
+    if(!silencioso)status("Atualizado agora");
+  }catch(e){status("Não consegui ler a planilha. Confira a internet e clique em Atualizar.",true)}
+}
+
+function visiveis(){const q=busca.toLowerCase();return leads.filter(l=>(!filtroOrigem||l.origem===filtroOrigem)&&(!q||[l.nome,l.whatsapp,l.obs,l.proximoPasso].join(" ").toLowerCase().includes(q)))}
+function renderStats(){
+  const h=hoje(), ativos=leads.filter(l=>!fechado(l));
+  const atras=ativos.filter(l=>l.dataProximo&&l.dataProximo<h).length, hj=ativos.filter(l=>l.dataProximo===h).length;
+  const prop=leads.filter(l=>["Proposta enviada","Quase fechando"].includes(l.etapa)).length, fech=leads.filter(l=>l.etapa==="Fechou").length;
+  const s=(v,t,c)=>el("div",{class:"stat"+(c?" alert":"")},el("b",{},String(v)),el("span",{},t));
+  $("#crmk-stats").replaceChildren(s(ativos.length,"Ativos"),s(hj,"Follow-up hoje"),s(atras,"Atrasados",atras>0),s(prop,"Em proposta"),s(fech,"Fechados"));
+}
+function renderOrigens(){
+  const usadas=[...new Set(leads.map(l=>l.origem).filter(Boolean))];
+  $("#crmk-origens").replaceChildren(...[null,...usadas].map(o=>el("button",{class:"chip",type:"button","aria-pressed":String(filtroOrigem===o),onclick:()=>{filtroOrigem=o;render()}},o||"Todas")));
+}
+function card(l){
+  const c=`var(${(STAGES.find(s=>s[0]===l.etapa)||STAGES[0])[1]})`, h=hoje();
+  const due=l.dataProximo?el("span",{class:"due"+(l.dataProximo<h&&!fechado(l)?" late":l.dataProximo===h?" today":"")},br(l.dataProximo)):null;
+  const e=el("div",{class:"card",tabindex:"0",style:`--c:${c}`,"data-row":l.row,role:"button","aria-label":l.nome},
+    el("div",{class:"row1"},el("div",{class:"nm"},l.nome),l.origem?el("span",{class:"tag"},l.origem):null),
+    l.proximoPasso?el("div",{class:"np"},l.proximoPasso):null,
+    el("div",{class:"meta"},due,l.whatsapp?el("span",{},fone(l.whatsapp)):null));
+  e.addEventListener("keydown",ev=>{if(ev.key==="Enter")abrir(l)});
+  e.addEventListener("pointerdown",ev=>{if(ev.button!==0)return;const st={x:ev.clientX,y:ev.clientY,el:e,lead:l,id:ev.pointerId,active:false,touch:ev.pointerType!=="mouse",moved:false};if(st.touch)st.timer=setTimeout(()=>{if(!st.moved&&drag===st)iniciar(st,st.x,st.y)},280);drag=st});
+  e.addEventListener("click",()=>{if(!e._sup)abrir(l);e._sup=false});
+  return e;
+}
+function ordenar(a,b){return (a.dataProximo||"9999")<(b.dataProximo||"9999")?-1:(a.dataProximo||"9999")>(b.dataProximo||"9999")?1:a.row-b.row}
+function render(){
+  renderStats(); renderOrigens();
+  const v=visiveis(), board=$("#crmk-board"), sl=board.scrollLeft;
+  board.replaceChildren(...STAGES.map(([nome,tok])=>{
+    const itens=v.filter(l=>l.etapa===nome||(nome==="Novo"&&!STAGES.some(s=>s[0]===l.etapa))).sort(ordenar);
+    return el("section",{class:"col",style:`--c:var(${tok})`,"data-etapa":nome},
+      el("div",{class:"col-h"},el("span",{class:"dot"}),el("h2",{},nome),el("span",{class:"n"},String(itens.length))),
+      el("div",{class:"list"},itens.length?itens.map(card):el("div",{class:"empty"},"Arraste um lead para cá")));
+  }));
+  board.scrollLeft=sl;
+}
+
+/* arrastar entre colunas */
+function iniciar(st,x,y){
+  st.active=true; const r=st.el.getBoundingClientRect(); st.dx=x-r.left; st.dy=y-r.top;
+  st.ghost=st.el.cloneNode(true); st.ghost.classList.add("ghost"); st.ghost.style.width=r.width+"px"; root.append(st.ghost);
+  st.el.classList.add("dragging"); st.ph=el("div",{class:"ph"}); try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}
+  mover(x,y);
+}
+function mover(x,y){
+  const st=drag; st.ghost.style.left=(x-st.dx)+"px"; st.ghost.style.top=(y-st.dy)+"px";
+  st.ghost.style.display="none"; const alvo=document.elementFromPoint(x,y); st.ghost.style.display="";
+  const colEl=alvo&&alvo.closest("#crmk .col");
+  root.querySelectorAll(".col.over").forEach(c=>c!==colEl&&c.classList.remove("over"));
+  if(colEl){colEl.classList.add("over");const list=$(".list",colEl);const vazio=$(".empty",list);if(vazio)vazio.remove();st.ph.style.setProperty("--c",getComputedStyle(colEl).getPropertyValue("--c"));list.append(st.ph);st.col=colEl}
+  const b=$("#crmk-board"),bb=b.getBoundingClientRect(); if(x>bb.right-50)b.scrollLeft+=14; else if(x<bb.left+50)b.scrollLeft-=14;
+}
+document.addEventListener("pointermove",ev=>{
+  if(!drag||ev.pointerId!==drag.id)return; const d=Math.hypot(ev.clientX-drag.x,ev.clientY-drag.y);
+  if(!drag.active){if(drag.touch){if(d>8){drag.moved=true;clearTimeout(drag.timer);drag=null}}else if(d>6)iniciar(drag,ev.clientX,ev.clientY);return}
+  ev.preventDefault(); mover(ev.clientX,ev.clientY);
+});
+document.addEventListener("touchmove",ev=>{if(drag&&drag.active)ev.preventDefault()},{passive:false});
+document.addEventListener("contextmenu",ev=>{if(drag&&drag.active)ev.preventDefault()});
+document.addEventListener("pointercancel",()=>{if(drag){clearTimeout(drag.timer);if(drag.active){drag.ghost.remove();render()}drag=null}});
+document.addEventListener("pointerup",async()=>{
+  if(!drag)return; const st=drag; drag=null; clearTimeout(st.timer); if(!st.active)return;
+  st.el._sup=true; setTimeout(()=>st.el._sup=false,50); st.ghost.remove();
+  root.querySelectorAll(".col.over").forEach(c=>c.classList.remove("over"));
+  const etapa=st.col&&st.col.dataset.etapa, l=st.lead;
+  if(!etapa||etapa===l.etapa){render();return}
+  const antes=l.etapa; l.etapa=etapa; l.ultimoContato=l.ultimoContato; render();
+  await salvar(l,{etapa},()=>{l.etapa=antes},`${l.nome} → ${etapa}`);
+});
+
+async function salvar(l,campos,desfazer,msg){
+  salvando++; const c=root.querySelector(`.card[data-row="${l.row}"]`); if(c)c.classList.add("saving");
+  try{await api({acao:"atualizar",row:l.row,nome:l.nome,campos}); status("Salvo na planilha: "+msg)}
+  catch(e){desfazer&&desfazer(); status("Não salvou: "+e.message+". Clique em Atualizar e tente de novo.",true)}
+  finally{salvando--; render()}
+}
+
+/* gaveta de edição */
+function abrir(l0){
+  const novo=!l0; const l=novo?{nome:"",whatsapp:"",origem:"Google",entrada:hoje(),etapa:"Novo",ultimoContato:"",proximoPasso:"",dataProximo:"",obs:""}:Object.assign({},l0);
+  const campo=(k,rot,tipo)=>el("div",{class:"f"},el("label",{for:"crmk-f-"+k},rot),el("input",{id:"crmk-f-"+k,type:tipo||"text",value:l[k]||""}));
+  const sel=(k,rot,ops)=>{const s=el("select",{id:"crmk-f-"+k},...ops.map(o=>el("option",{value:o},o)));s.value=l[k]||ops[0];return el("div",{class:"f"},el("label",{for:"crmk-f-"+k},rot),s)};
+  const num=(l.whatsapp||"").replace(/\D/g,"");
+  const salvarBtn=el("button",{class:"btn primary",type:"submit"},novo?"Adicionar na planilha":"Salvar na planilha");
+  const form=el("form",{class:"drawer",role:"dialog","aria-modal":"true","aria-label":novo?"Novo lead":l.nome},
+    el("h3",{},novo?"Novo lead":l.nome),
+    novo?null:el("div",{class:"muted"},"Linha "+l.row+" da aba CRM"),
+    num?el("a",{class:"wa",href:"https://wa.me/"+(num.length<=11?"55":"")+num,target:"_blank",rel:"noopener"},"Abrir conversa no WhatsApp ↗"):null,
+    campo("nome","Nome"),
+    el("div",{class:"grid2"},campo("whatsapp","WhatsApp (DDD + número)","tel"),sel("origem","Origem",ORIGENS.includes(l.origem)||!l.origem?ORIGENS:[l.origem].concat(ORIGENS))),
+    el("div",{class:"grid2"},sel("etapa","Etapa",STAGES.map(s=>s[0])),campo("entrada","Entrada","date")),
+    campo("proximoPasso","Próximo passo"),
+    el("div",{class:"grid2"},campo("dataProximo","Data do próximo passo","date"),campo("ultimoContato","Último contato","date")),
+    el("div",{class:"f"},el("label",{for:"crmk-f-obs"},"Observações"),el("textarea",{id:"crmk-f-obs"},l.obs||"")),
+    el("div",{class:"actions"},salvarBtn,el("button",{class:"btn",type:"button",onclick:fechar},"Fechar")));
+  form.addEventListener("submit",async ev=>{ev.preventDefault();
+    const d={}; ["nome","whatsapp","origem","etapa","entrada","proximoPasso","dataProximo","ultimoContato","obs"].forEach(k=>d[k]=$("#crmk-f-"+k,form).value.trim());
+    d.whatsapp=d.whatsapp.replace(/\D/g,""); if(!d.nome){status("Coloque o nome do lead.",true);return}
+    salvarBtn.disabled=true;
+    try{ if(novo){await api({acao:"adicionar",campos:d});status("Lead adicionado na planilha")}
+         else{await api({acao:"atualizar",row:l.row,nome:l0.nome,campos:d});status("Salvo na planilha")}
+         fechar(); carregar(true);
+    }catch(e){status("Não salvou: "+e.message,true);salvarBtn.disabled=false}
+  });
+  const bg=el("div",{class:"drawer-bg",onclick:ev=>{if(ev.target===bg)fechar()}},form);
+  $("#crmk-drawer").replaceChildren(bg); $("#crmk-f-nome",form).focus();
+}
+function fechar(){$("#crmk-drawer").replaceChildren()}
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape")fechar()});
+
+$("#crmk-q").addEventListener("input",ev=>{busca=ev.target.value;render()});
+$("#crmk-add").addEventListener("click",()=>abrir(null));
+$("#crmk-reload").addEventListener("click",()=>carregar(false));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-ultimaCarga>15000)carregar(true)});
+setInterval(()=>{if(!document.hidden)carregar(true)},30000);
+render(); carregar(true);
+})();
+</script>
