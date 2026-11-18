@@ -73,6 +73,15 @@ header.top{display:grid;gap:22px;border-bottom:1px solid var(--line-soft);paddin
 .hero h1 span{color:var(--accent)}
 .lede{color:var(--ink-2);margin:0;max-width:72ch;font-size:15px}
 
+/* abas de mercado */
+.mkt{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line-soft)}
+.mkt button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:12px 18px 11px;margin-bottom:-1px;font-size:12px;letter-spacing:.16em;color:var(--muted);display:inline-flex;gap:10px;align-items:baseline}
+.mkt button small{font-size:10px;letter-spacing:.08em;color:var(--muted-2);text-transform:none}
+.mkt button:hover:not(:disabled){background:transparent;color:var(--ink);border-color:transparent;border-bottom-color:var(--line)}
+.mkt button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}
+.mkt button[aria-selected=true] small{color:var(--ink-2)}
+@media (max-width:560px){.mkt button{padding:10px 12px;letter-spacing:.1em}.mkt button small{display:none}}
+
 /* painéis */
 .panel{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:18px 20px}
 .panel-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px;margin-bottom:14px}
@@ -255,7 +264,7 @@ details[open] summary::before{content:"–"}
     <div class="bar">
       <div class="brand">
         <svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect x=".5" y=".5" width="37" height="37" rx="2" fill="#0D1115" stroke="#2A333B"/><path d="M7 13c5 0 6 14 12 14s7-16 12-16" fill="none" stroke="#A8E05F" stroke-width="2.4" stroke-linecap="round"/><circle cx="19" cy="27" r="2.6" fill="#A8E05F"/></svg>
-        <span class="brand-name">STRADDLE B3</span><span class="sep"></span><span class="brand-sub">Estatística de variação</span>
+        <span class="brand-name" id="brand-name">STRADDLE B3</span><span class="sep"></span><span class="brand-sub">Estatística de variação</span>
       </div>
       <div class="bar-r">
         <div class="status"><span class="live" aria-hidden="true"></span><span>Último pregão</span><b id="hdr-last">–</b></div>
@@ -265,9 +274,13 @@ details[open] summary::before{content:"–"}
         </button>
       </div>
     </div>
+    <nav class="mkt" role="tablist" aria-label="Mercado">
+      <button type="button" role="tab" id="mkt-b3" data-m="b3" aria-selected="true">B3 <small>Brasil · todas as ações</small></button>
+      <button type="button" role="tab" id="mkt-us" data-m="us" aria-selected="false">EUA <small>S&amp;P 500 + Nasdaq 100</small></button>
+    </nav>
     <div class="hero">
       <h1>Quando a ação estica,<br><span>o que vem depois?</span></h1>
-      <p class="lede">Escolha a variação, veja como cada ação da B3 reagiu no histórico e filtre pelas suas regras de operação.</p>
+      <p class="lede" id="lede">Escolha a variação, veja como cada ação da B3 reagiu no histórico e filtre pelas suas regras de operação.</p>
     </div>
   </header>
 
@@ -278,7 +291,7 @@ details[open] summary::before{content:"–"}
     <div class="row" style="align-items:center">
       <button class="primary" id="btn-refresh" type="button">Atualizar dados</button>
     </div>
-    <details style="flex-basis:100%">
+    <details style="flex-basis:100%" id="own-files">
       <summary>Usar um arquivo próprio (Profit ou B3)</summary>
       <div class="notes" style="margin-top:8px">
         <p>Os dados da B3 são atualizados sozinhos todo dia útil, depois do fechamento. Se quiser somar um histórico seu, como o exportado do <b>Profit</b> (.CSV) ou um arquivo <b>COTAHIST</b> da B3 (.ZIP ou .TXT), carregue aqui. Ele é combinado com os dados do site só no seu navegador.</p>
@@ -326,7 +339,7 @@ details[open] summary::before{content:"–"}
       <div class="rule"><span class="flabel"><label for="r-trades">Mínimo de trades</label><span>nº</span></span><input type="number" id="r-trades" step="1" min="1" value="10"></div>
       <div class="rule"><span class="flabel"><label for="r-avg">Ganho médio mínimo</label><span>%</span></span><input type="number" id="r-avg" step="0.05" value="0.20"></div>
       <div class="rule"><span class="flabel"><label for="r-loss">Perda máx. tolerada</label><span>%</span></span><input type="number" id="r-loss" step="0.1" min="0" value="3.0"><span class="hint">Pior trade igual ou acima disso reprova</span></div>
-      <div class="rule"><span class="flabel"><label for="r-vol">Volume médio mínimo</label><span>R$</span></span><input type="number" id="r-vol" step="100000" min="0" value="0"></div>
+      <div class="rule"><span class="flabel"><label for="r-vol">Volume médio mínimo</label><span id="r-vol-cur">R$</span></span><input type="number" id="r-vol" step="100000" min="0" value="0"></div>
     </div>
   </section>
 
@@ -356,7 +369,7 @@ details[open] summary::before{content:"–"}
 
   <section class="notes" aria-label="Como ler">
     <p><b>Como é calculado.</b> No modo day trade (padrão), o evento é o preço tocar a variação durante o pregão, pela mínima (compra) ou pela máxima (venda). A entrada é nesse nível, ou na abertura se a ação já abrir além dele, e a saída é no fechamento do mesmo dia. Nos outros modos, o evento é o fechamento variar X% e a saída acontece no pregão seguinte. Ganho médio é a média por trade; Resultado é a soma de todos os trades.</p>
-    <p><b>Cuidados.</b> Os arquivos da B3 trazem preços sem ajuste. Em dia de data-ex de dividendos a ação pode "cair" sem queda real, e desdobramentos criam saltos falsos. Variações acima de 30% são ignoradas para filtrar os casos mais grosseiros. Estatística passada mostra frequência, não garante o próximo trade.</p>
+    <p id="note-care"><b>Cuidados.</b> Os arquivos da B3 trazem preços sem ajuste. Em dia de data-ex de dividendos a ação pode "cair" sem queda real, e desdobramentos criam saltos falsos. Variações acima de 30% são ignoradas para filtrar os casos mais grosseiros. Estatística passada mostra frequência, não garante o próximo trade.</p>
   </section>
 </div>
 
@@ -388,8 +401,19 @@ details[open] summary::before{content:"–"}
 <script>
 (function(){
 const LEVELS=[1.5,2.5,3.0,3.5,4.5];
+const MK={
+  b3:{name:'B3',file:'data/quotes.json',badge:'Dados da B3',cur:'R$',brand:'STRADDLE B3',prefs:'elastico-prefs2',ph:'ex.: PETR4, VALE3',
+    lede:'Escolha a variação, veja como cada ação da B3 reagiu no histórico e filtre pelas suas regras de operação.',
+    tv:tk=>'https://br.tradingview.com/chart/?symbol=BMFBOVESPA:'+encodeURIComponent(tk),
+    care:'<b>Cuidados.</b> Os arquivos da B3 trazem preços sem ajuste. Em dia de data-ex de dividendos a ação pode "cair" sem queda real, e desdobramentos criam saltos falsos. Variações acima de 30% são ignoradas para filtrar os casos mais grosseiros. Estatística passada mostra frequência, não garante o próximo trade.'},
+  us:{name:'EUA',file:'data/us.json',badge:'Dados dos EUA',cur:'US$',brand:'STRADDLE EUA',prefs:'elastico-prefs2-us',ph:'ex.: AAPL, NVDA, TSLA',
+    lede:'Escolha a variação, veja como cada ação do S&P 500 e do Nasdaq 100 reagiu no histórico e filtre pelas suas regras de operação.',
+    tv:tk=>'https://br.tradingview.com/chart/?symbol='+encodeURIComponent(tk),
+    care:'<b>Cuidados.</b> Os preços das ações americanas vêm ajustados por desdobramentos, mas não por dividendos: na data-ex a ação pode "cair" o valor do dividendo (nas grandes americanas isso costuma ser bem menos de 1%). A lista segue a composição atual dos índices, então ações que saíram deles no período não aparecem. Variações acima de 30% são ignoradas. Volume é o financeiro médio por pregão, em dólares. Estatística passada mostra frequência, não garante o próximo trade.'}
+};
+const M=()=>MK[S.market];
 const $=id=>document.getElementById(id);
-const S={series:new Map(),source:'demo',label:'',side:'c',varPct:2.5,start:null,end:null,assets:'',mode:'dt',ref:'pc',alvo:1,cost:0,
+const S={market:'b3',series:new Map(),source:'demo',label:'',side:'c',varPct:2.5,start:null,end:null,assets:'',mode:'dt',ref:'pc',alvo:1,cost:0,
   rules:{rate:60,trades:10,avg:0.20,loss:3.0,vol:0},onlyOk:false,sort:{key:'sum',dir:-1},rows:[],lastDate:null};
 
 /* ---------- utilidades ---------- */
@@ -575,7 +599,7 @@ function countTo(el,to){const from=+(el.dataset.v||0);el.dataset.v=to;if(reduce|
   const t0=performance.now(),dur=600;const step=t=>{const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=nf0.format(Math.round(from+(to-from)*e));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
 const COLS=[
   {k:'t',l:'Ação'},{k:'w',l:'Ganhos'},{k:'rate',l:'Ganho %'},{k:'l',l:'Perdas'},{k:'lrate',l:'Perda %'},{k:'n',l:'Trades'},
-  {k:'sum',l:'Resultado'},{k:'maxLoss',l:'Perda máx'},{k:'maxGain',l:'Ganho máx'},{k:'avg',l:'Ganho médio'},{k:'vol',l:'Volume R$'},{k:'ok',l:'Status'}];
+  {k:'sum',l:'Resultado'},{k:'maxLoss',l:'Perda máx'},{k:'maxGain',l:'Ganho máx'},{k:'avg',l:'Ganho médio'},{k:'vol',l:'Volume'},{k:'ok',l:'Status'}];
 function renderHead(){
   $('thead').innerHTML=COLS.map(c=>`<th tabindex="0" data-k="${c.k}" class="${S.sort.key===c.k?'sorted':''}" aria-sort="${S.sort.key===c.k?(S.sort.dir<0?'descending':'ascending'):'none'}">${S.sort.key===c.k?(S.sort.dir<0?'↓ ':'↑ '):''}${c.l}</th>`).join('');
   $('thead').querySelectorAll('th').forEach(th=>{const go=()=>{const k=th.dataset.k;S.sort=S.sort.key===k?{key:k,dir:-S.sort.dir}:{key:k,dir:k==='t'?1:-1};render()};th.onclick=go;th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
@@ -589,7 +613,7 @@ function render(){
     <td class="t">${r.t}${r.sig?' <span class="pill sigp" title="Bateu a variação no último pregão">análise</span>':''}</td>
     <td>${r.w}</td><td class="${r.rate>=S.rules.rate/100?'pos':''}">${pct(r.rate)}</td><td>${r.l}</td><td>${pct(r.lrate)}</td><td>${r.n}</td>
     <td><b class="${cls(r.sum)}">${pct(r.sum)}</b></td><td class="neg">${pct(r.maxLoss)}</td><td class="pos">${pct(r.maxGain)}</td>
-    <td class="${cls(r.avg)}">${pct(r.avg)}</td><td title="Volume financeiro médio por pregão: R$ ${nf0.format(r.vol)}">${nfC.format(r.vol)}</td>
+    <td class="${cls(r.avg)}">${pct(r.avg)}</td><td title="Volume financeiro médio por pregão: ${M().cur} ${nf0.format(r.vol)}">${nfC.format(r.vol)}</td>
     <td class="st">${r.ok?'<span class="pill ok">Opera</span>':`<span class="pill no">${r.why.join(' · ')}</span>`}</td></tr>`).join('')
     :`<tr><td colspan="${COLS.length}" class="empty" style="text-align:center;position:static">Nenhuma ação com eventos nesse filtro. Tente uma variação menor ou um período maior.</td></tr>`;
   const tb=$('tbody');tb.classList.remove('fresh');void tb.offsetWidth;tb.classList.add('fresh');
@@ -609,9 +633,9 @@ function render(){
     :`<span class="hint">Nenhuma ação ${S.side==='c'?'caiu':'subiu'} ${nf2.format(S.varPct)}% ou mais no último pregão.</span>`;
   $('sig-list').querySelectorAll('.sig').forEach(b=>b.onclick=()=>openDetail(b.dataset.t));
   // fonte
-  const real=S.source!=='demo';const b=$('src-badge');b.className='badge '+(real?'real':'demo');b.textContent=S.source==='auto'?'Dados da B3':real?'B3 + seus arquivos':'Dados de exemplo (simulados)';
+  const real=S.source!=='demo';const b=$('src-badge');b.className='badge '+(real?'real':'demo');b.textContent=S.source==='auto'?M().badge:S.source==='none'?'Sem dados':real?'B3 + seus arquivos':'Dados de exemplo (simulados)';
   let tot=0;S.series.forEach(s=>tot+=s.d.length);
-  $('src-label').textContent=(S.source==='auto'?'Atualizado até o pregão de '+ld+' · ':real?S.label+' · ':'Ações fictícias, só para mostrar a ferramenta · ')+nf0.format(S.series.size)+' ações, '+nf0.format(tot)+' pregões';
+  $('src-label').textContent=S.source==='none'?'Os dados dos EUA ainda não foram publicados. Eles entram na próxima atualização automática.':(S.source==='auto'?'Atualizado até o pregão de '+ld+' · ':real?S.label+' · ':'Ações fictícias, só para mostrar a ferramenta · ')+nf0.format(S.series.size)+' ações, '+nf0.format(tot)+' pregões';
   if(S.mode==='dt'){$('rule-explain').textContent=`Regra atual (day trade): quando a ação ${S.side==='c'?'cai':'sobe'} ${nf2.format(S.varPct)}% em relação ${S.ref==='op'?'à abertura do dia':'ao fechamento anterior'} durante o pregão, ${S.side==='c'?'compra':'vende a descoberto'} nesse preço (ou na abertura, se já abrir além dele) e zera no fechamento do mesmo dia${S.cost>0?`, descontando ${nf2.format(S.cost)}% de custo`:''}.`;return}
   const modeTxt={cc:'vende no fechamento do pregão seguinte',co:'sai na abertura do pregão seguinte',alvo:`sai no alvo de ${nf2.format(S.alvo)}% se o pregão seguinte tocar nele, senão no fechamento`}[S.mode];
   $('rule-explain').textContent=`Regra atual: quando a ação ${S.side==='c'?'cai':'sobe'} ${nf2.format(S.varPct)}% ou mais num pregão, ${S.side==='c'?'compra':'vende a descoberto'} no fechamento e ${modeTxt}${S.cost>0?`, descontando ${nf2.format(S.cost)}% de custo`:''}.`;
@@ -628,7 +652,7 @@ function syncInputs(){
 }
 function setRangeFromData(force){let mn=Infinity,mx=0;S.series.forEach(s=>{mn=Math.min(mn,s.d[0]);mx=Math.max(mx,s.d[s.d.length-1])});
   if(force||!S.start||S.start<mn||S.start>mx)S.start=mn;if(force||!S.end||S.end>mx||S.end<mn)S.end=mx;}
-function persist(){ls.set('elastico-prefs2',{side:S.side,varPct:S.varPct,mode:S.mode,ref:S.ref,alvo:S.alvo,cost:S.cost,rules:S.rules,onlyOk:S.onlyOk,sort:S.sort,assets:S.assets})}
+function persist(){ls.set(M().prefs,{side:S.side,varPct:S.varPct,mode:S.mode,ref:S.ref,alvo:S.alvo,cost:S.cost,rules:S.rules,onlyOk:S.onlyOk,sort:S.sort,assets:S.assets})}
 function update(){compute();renderChips();syncInputs();render();persist()}
 
 /* ---------- detalhe ---------- */
@@ -639,7 +663,7 @@ function openDetail(tk){
   const row=S.rows.find(r=>r.t===tk);const tr=row?row.trades:[];
   $('d-title').textContent=tk;
   $('d-eyebrow').textContent=(S.side==='c'?'Compra após queda de ':'Venda após alta de ')+nf2.format(S.varPct)+'% · '+d2br(S.start)+' a '+d2br(S.end);
-  $('d-tv').href='https://br.tradingview.com/chart/?symbol=BMFBOVESPA:'+encodeURIComponent(tk);
+  $('d-tv').href=M().tv(tk);
   $('d-levels').innerHTML=[...new Set([...LEVELS,S.varPct])].sort((a,b)=>a-b).map(v=>{const st=stats(tradesFor(s,S.side,v,S.start,S.end,S.mode,S.alvo,S.cost));
     return `<tr class="${Math.abs(v-S.varPct)<1e-9?'cur':''}"><td>${nf2.format(v)}%</td><td>${st.n}</td><td>${st.n?pct(st.rate):'–'}</td><td class="${cls(st.avg)}">${st.n?pct(st.avg):'–'}</td><td class="${st.n?cls(st.maxLoss):''}">${st.n?pct(st.maxLoss):'–'}</td><td class="${cls(st.sum)}">${st.n?pct(st.sum):'–'}</td></tr>`}).join('');
   $('d-trades').innerHTML=tr.length?tr.slice().reverse().map(t=>`<tr><td>${d2br(t.d)}</td><td class="${cls(t.v)}">${pctS(t.v)}</td><td>${nf2.format(t.en)}</td><td>${nf2.format(t.ex)}</td><td class="${cls(t.r)}"><b class="${cls(t.r)}">${pctS(t.r)}</b></td></tr>`).join(''):'<tr><td colspan="5" class="empty">Sem trades no período.</td></tr>';
@@ -701,9 +725,9 @@ $('d-close').onclick=closeDetail;$('overlay').onclick=e=>{if(e.target.id==='over
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('overlay').hidden)closeDetail()});
 /* ---------- exportação ---------- */
 function setExportState(){}
-function exportName(ext){return `straddle-b3_${S.side==='c'?'compra':'venda'}_${String(S.varPct).replace('.','p')}pct_${d2iso(S.start)}_a_${d2iso(S.end)}.${ext}`}
+function exportName(ext){return `straddle-${S.market}_${S.side==='c'?'compra':'venda'}_${String(S.varPct).replace('.','p')}pct_${d2iso(S.start)}_a_${d2iso(S.end)}.${ext}`}
 function sourceTxt(){return S.source==='real'?'Fonte: '+S.label:'Fonte: dados de exemplo (simulados), ações fictícias'}
-function rulesTxt(){const R=S.rules;return `Regras: acerto ≥ ${R.rate}%, mínimo ${R.trades} trades, ganho médio ≥ ${nf2.format(R.avg)}%, perda máx < ${nf2.format(R.loss)}%${R.vol>0?', volume médio ≥ R$ '+nf0.format(R.vol):''}`}
+function rulesTxt(){const R=S.rules;return `Regras: acerto ≥ ${R.rate}%, mínimo ${R.trades} trades, ganho médio ≥ ${nf2.format(R.avg)}%, perda máx < ${nf2.format(R.loss)}%${R.vol>0?', volume médio ≥ '+M().cur+' '+nf0.format(R.vol):''}`}
 function doSave(filename,data){
   const ext=filename.split('.').pop();const type=ext==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
@@ -712,11 +736,11 @@ function doSave(filename,data){
 function exportXlsx(){
   if(!window.XLSX){$('copy-msg').textContent='Não consegui carregar o gerador de Excel. Recarregue a página.';return}
   const rows=sortedRows();
-  const aoa=[COLS.map(c=>c.l),...rows.map(r=>[r.t,r.w,r.rate,r.l,r.lrate,r.n,r.sum,r.maxLoss,r.maxGain,r.avg,Math.round(r.vol),r.ok?'Opera':r.why.join(' · ')])];
+  const aoa=[COLS.map(c=>c.k==='vol'?'Volume '+M().cur:c.l),...rows.map(r=>[r.t,r.w,r.rate,r.l,r.lrate,r.n,r.sum,r.maxLoss,r.maxGain,r.avg,Math.round(r.vol),r.ok?'Opera':r.why.join(' · ')])];
   const ws=XLSX.utils.aoa_to_sheet(aoa);
   for(let i=1;i<aoa.length;i++){[2,4,6,7,8,9].forEach(c=>{const x=ws[XLSX.utils.encode_cell({r:i,c})];if(x)x.z='0.00%'});const v=ws[XLSX.utils.encode_cell({r:i,c:10})];if(v)v.z='#,##0'}
   ws['!cols']=[10,8,9,8,9,8,11,10,10,11,15,34].map(w=>({wch:w}));ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(aoa.length-1,1),c:11}})};
-  const p=XLSX.utils.aoa_to_sheet([['Straddle B3'],['Regra',$('rule-explain').textContent],['Período',d2br(S.start)+' a '+d2br(S.end)],['Operação',S.side==='c'?'Compra após queda':'Venda após alta'],['Variação',nf2.format(S.varPct)+'%'],['Custo por operação',nf2.format(S.cost)+'%'],['Regras',rulesTxt().replace('Regras: ','')],['Fonte',sourceTxt().replace('Fonte: ','')],['Exportado em',new Date().toLocaleString('pt-BR')]]);
+  const p=XLSX.utils.aoa_to_sheet([['Straddle '+M().name],['Regra',$('rule-explain').textContent],['Período',d2br(S.start)+' a '+d2br(S.end)],['Operação',S.side==='c'?'Compra após queda':'Venda após alta'],['Variação',nf2.format(S.varPct)+'%'],['Custo por operação',nf2.format(S.cost)+'%'],['Regras',rulesTxt().replace('Regras: ','')],['Fonte',sourceTxt().replace('Fonte: ','')],['Exportado em',new Date().toLocaleString('pt-BR')]]);
   p['!cols']=[{wch:20},{wch:110}];
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Estatísticas');XLSX.utils.book_append_sheet(wb,p,'Parâmetros');
   doSave(exportName('xlsx'),XLSX.write(wb,{bookType:'xlsx',type:'array'}));
@@ -726,12 +750,12 @@ function exportPdf(){
   const rows=sortedRows();const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
   if(typeof doc.autoTable!=='function'){$('copy-msg').textContent='Não consegui carregar o gerador de PDF. Recarregue a página.';return}
   const safe=s=>String(s).replace(/≤/g,'<=').replace(/≥/g,'>=');
-  doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(20,26,27);doc.text('Straddle B3',40,42);
+  doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(20,26,27);doc.text('Straddle '+M().name,40,42);
   doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(90,102,104);
   const info=doc.splitTextToSize([safe($('rule-explain').textContent),'Período: '+d2br(S.start)+' a '+d2br(S.end)+'   ·   '+rows.length+' ações   ·   '+rows.filter(r=>r.ok).length+' passam nas regras',safe(rulesTxt()),sourceTxt()].join('\n'),760);
   doc.text(info,40,60);
   const UP=[70,130,20],DN=[200,40,55];
-  doc.autoTable({startY:60+info.length*11+8,head:[COLS.map(c=>c.l)],
+  doc.autoTable({startY:60+info.length*11+8,head:[COLS.map(c=>c.k==='vol'?'Volume '+M().cur:c.l)],
     body:rows.map(r=>[r.t,r.w,pct(r.rate),r.l,pct(r.lrate),r.n,pct(r.sum),pct(r.maxLoss),pct(r.maxGain),pct(r.avg),nf0.format(r.vol),r.ok?'Opera':safe(r.why.join(' · '))]),
     styles:{fontSize:8,cellPadding:4,halign:'right',lineColor:[217,223,224],lineWidth:0.4},headStyles:{fillColor:[13,17,21],textColor:[168,224,95],fontStyle:'bold'},
     alternateRowStyles:{fillColor:[244,246,246]},columnStyles:{0:{halign:'left',fontStyle:'bold'},11:{halign:'left',cellWidth:120}},margin:{left:40,right:40},
@@ -745,13 +769,35 @@ function exportPdf(){
 $('btn-pdf').onclick=exportPdf;$('btn-xlsx').onclick=exportXlsx;
 
 /* ---------- início ---------- */
-const p=ls.get('elastico-prefs2');if(p){Object.assign(S,{side:p.side||'c',varPct:p.varPct||2.5,mode:p.mode||'dt',ref:p.ref||'pc',alvo:p.alvo||1,cost:p.cost||0,onlyOk:!!p.onlyOk,sort:p.sort||S.sort,assets:p.assets||''});if(p.rules)Object.assign(S.rules,p.rules)}
+function loadPrefs(){const p=ls.get(M().prefs)||(S.market==='us'?ls.get(MK.b3.prefs):null);
+  S.assets='';S.rules.vol=0;
+  if(p){Object.assign(S,{side:p.side||'c',varPct:p.varPct||2.5,mode:p.mode||'dt',ref:p.ref||'pc',alvo:p.alvo||1,cost:p.cost||0,onlyOk:!!p.onlyOk,sort:p.sort||S.sort});if(p.rules)Object.assign(S.rules,p.rules);
+    if(ls.get(M().prefs)){S.assets=p.assets||''}else{S.rules.vol=0}}}
+const memo={};
+function applyMarket(){
+  const m=M();document.documentElement.setAttribute('data-market',S.market);
+  ['b3','us'].forEach(k=>$('mkt-'+k).setAttribute('aria-selected',k===S.market));
+  $('brand-name').textContent=m.brand;$('lede').textContent=m.lede;$('note-care').innerHTML=m.care;$('r-vol-cur').textContent=m.cur;
+  $('f-assets').placeholder=m.ph;$('own-files').hidden=S.market!=='b3';document.title='Straddle '+m.name;
+}
+function setMarket(mk,first){
+  if(!MK[mk])mk='b3';if(!first&&mk===S.market)return;
+  if(!first){persist();if(S.source==='auto'||S.source==='real')memo[S.market]={series:S.series,source:S.source,label:S.label,start:S.start,end:S.end}}
+  S.market=mk;try{localStorage.setItem('straddle-market',mk)}catch(e){}
+  try{history.replaceState(null,'',mk==='us'?'#eua':location.pathname+location.search)}catch(e){}
+  closeDetail();S.allSigs=false;loadPrefs();applyMarket();
+  const c=memo[mk];
+  if(c){Object.assign(S,c);update()}else{S.series=new Map();S.source='demo';S.start=S.end=null;loadAuto(false)}
+}
+['b3','us'].forEach(k=>$('mkt-'+k).onclick=()=>setMarket(k));
+let loadSeq=0;
 async function loadAuto(manual){
-  const prog=$('progress');prog.hidden=false;prog.style.color='';prog.textContent='Buscando dados da B3…';$('btn-refresh').disabled=true;
+  const mk=S.market,seq=++loadSeq;
+  const prog=$('progress');prog.hidden=false;prog.style.color='';prog.textContent='Buscando dados '+(mk==='us'?'dos EUA':'da B3')+'…';$('btn-refresh').disabled=true;
   try{
-    const r=await fetch('data/quotes.json?t='+Date.now(),{cache:'no-store'});
+    const r=await fetch(MK[mk].file+'?t='+Date.now(),{cache:'no-store'});
     if(!r.ok)throw new Error(r.status===404?'arquivo de dados ainda não publicado':'erro '+r.status);
-    const j=await r.json();const m=new Map();const k=x=>x/100;
+    const j=await r.json();if(seq!==loadSeq)return;const m=new Map();const k=x=>x/100;
     for(const[tk,a]of Object.entries(j.tickers))m.set(tk,{d:a[0],o:a[1].map(k),h:a[2].map(k),l:a[3].map(k),c:a[4].map(k),v:a[5]});
     const prevLast=S.lastDate,prevEnd=S.end;
     S.series=m;S.source='auto';S.label='';
@@ -760,9 +806,12 @@ async function loadAuto(manual){
     prog.textContent=manual?'Dados atualizados.':'';prog.hidden=!manual;if(manual)setTimeout(()=>prog.hidden=true,4000);
     update();
   }catch(e){
+    if(seq!==loadSeq)return;
+    if(mk==='us'){if(S.source!=='auto'||!S.series.size){S.series=new Map();S.source='none';S.start=S.end=null;update()}
+      prog.textContent='Não consegui buscar os dados dos EUA ('+e.message+').'+(S.source==='auto'?' Mantive os dados anteriores.':'');prog.style.color='var(--down)';return}
     if(S.source==='demo'||!S.series.size){S.series=genSample();S.source='demo';setRangeFromData(true);update()}
     prog.textContent='Não consegui buscar os dados da B3 ('+e.message+').'+(S.source==='demo'?' Mostrando dados de exemplo.':' Mantive os dados anteriores.');prog.style.color='var(--down)';
-  }finally{$('btn-refresh').disabled=false}
+  }finally{if(seq===loadSeq)$('btn-refresh').disabled=false}
 }
 $('btn-refresh').onclick=()=>loadAuto(true);
 function setTheme(t,from){
@@ -776,7 +825,10 @@ $('theme-btn').onclick=()=>setTheme(document.documentElement.getAttribute('data-
 setTheme(document.documentElement.getAttribute('data-theme'),'parent');
 window.addEventListener('message',e=>{if(e.origin!=='https://traderfabricionicolau.com.br')return;if(e.data&&(e.data.tfnTheme==='light'||e.data.tfnTheme==='dark'))setTheme(e.data.tfnTheme,'parent')});
 $('sig-more').onclick=()=>{S.allSigs=!S.allSigs;render()};
-S.source='demo';loadAuto(false);
+S.source='demo';
+let startMk='b3';try{const q=new URLSearchParams(location.search).get('mercado');startMk=/eua|us/i.test(location.hash)||/eua|us/i.test(q||'')?'us':(q==='b3'||/b3/i.test(location.hash))?'b3':(localStorage.getItem('straddle-market')||'b3')}catch(e){}
+window.addEventListener('hashchange',()=>setMarket(/eua|us/i.test(location.hash)?'us':'b3'));
+setMarket(startMk,true);
 })();
 </script>
 

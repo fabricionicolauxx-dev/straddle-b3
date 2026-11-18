@@ -29,6 +29,12 @@ jobs:
           python-version: "3.12"
       - name: Baixar dados da B3
         run: python scripts/update.py --out site/data/quotes.json --start-year 2024
+      - name: Baixar dados dos EUA (S&P 500 + Nasdaq 100)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          pip install --quiet yfinance pandas lxml
+          python scripts/update_us.py --out site/data/us.json --start 2024-01-01
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
