@@ -35,26 +35,36 @@ def get(url, timeout=60):
 
 
 def wiki_tickers():
+    """Composição atual de cada índice na Wikipedia; se um falhar, completa com a lista de reserva."""
     import pandas as pd
-    out = set()
-    for name, url in [("S&P 500", "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"),
-                      ("Nasdaq-100", "https://en.wikipedia.org/wiki/Nasdaq-100")]:
-        html = get(url).decode("utf-8")
+    out, ok = set(), True
+    for name, url, minimo in [("S&P 500", "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies", 450),
+                              ("Nasdaq-100", "https://en.wikipedia.org/wiki/Nasdaq-100", 90)]:
         found = set()
-        for t in pd.read_html(io.StringIO(html)):
-            cols = [str(c).strip().lower() for c in t.columns]
-            for key in ("symbol", "ticker"):
-                if key in cols:
-                    col = t.columns[cols.index(key)]
+        try:
+            html = get(url).decode("utf-8")
+            for t in pd.read_html(io.StringIO(html)):
+                for col in t.columns:
+                    nome = " ".join(map(str, col)) if isinstance(col, tuple) else str(col)
+                    nome = nome.strip().lower()
+                    if not ("ticker" in nome or "symbol" in nome):
+                        continue
                     vals = [str(v).strip().upper() for v in t[col] if isinstance(v, str)]
                     vals = [v for v in vals if 1 <= len(v) <= 6 and v.replace(".", "").isalpha()]
                     if len(vals) > len(found):
                         found = set(vals)
+        except Exception as e:
+            print(f"  {name}: erro ao ler a Wikipedia ({e})")
         print(f"  {name}: {len(found)} ações")
-        if len(found) < (450 if name == "S&P 500" else 90):
-            raise RuntimeError(f"tabela do {name} veio incompleta")
-        out |= found
-    return sorted(out)
+        if len(found) < minimo:
+            ok = False
+        else:
+            out |= found
+    if not ok:
+        reserva = set(file_tickers())
+        print(f"  completando com a lista de reserva ({len(reserva)} ações)")
+        out |= reserva
+    return sorted(out), ok
 
 
 def file_tickers():
@@ -138,8 +148,8 @@ def main():
 
     print("Lista de ações:")
     try:
-        tickers = wiki_tickers()
-        src_list = "composição atual (Wikipedia)"
+        tickers, ok = wiki_tickers()
+        src_list = "composição atual (Wikipedia)" if ok else "Wikipedia + lista de reserva"
     except Exception as e:
         print(f"  Wikipedia falhou ({e}); usando a lista de reserva")
         tickers = file_tickers()
