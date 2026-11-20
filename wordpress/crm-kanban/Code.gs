@@ -108,6 +108,7 @@ function primeiraLinhaVazia_(sh) {
  * Só olha linhas do formulário depois da última já processada e pula telefones que já estão no CRM.
  */
 function sincronizarFormulario() {
+  try { sincronizarCampanhas(); } catch (err) { console.error('campanhas: ' + err); }
   const props = PropertiesService.getScriptProperties();
   const form = SpreadsheetApp.getActive().getSheetByName(ABA_FORM);
   const ultima = Number(props.getProperty('ULTIMA_LINHA_FORM') || form.getLastRow());
@@ -138,7 +139,6 @@ function sincronizarFormulario() {
   } finally {
     lock.releaseLock();
   }
-  try { sincronizarCampanhas(); } catch (err) { console.error('campanhas: ' + err); }
 }
 
 /**
