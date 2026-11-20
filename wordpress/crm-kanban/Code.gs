@@ -6,8 +6,9 @@
 const TOKEN = '__TOKEN__';
 const ABA_CRM = 'CRM';
 const ABA_FORM = 'Leads página inicial';
+const PREFIXO_CAMPANHA = 'Campanha '; // abas do Meta (formulário instantâneo): "Campanha Live 22.11 Facebook" etc.
 const TZ = 'America/Sao_Paulo';
-const ETAPAS = ['Novo', 'Contatado', 'Respondeu', 'Chamada marcada', 'Proposta enviada', 'Quase fechando', 'Em pausa', 'Fechou', 'Perdido'];
+const ETAPAS = ['Novo', 'Inscrito live', 'Contatado', 'Respondeu', 'Chamada marcada', 'Proposta enviada', 'Quase fechando', 'Em pausa', 'Fechou', 'Perdido'];
 // Colunas da aba CRM (A..J). J = Lembrete no formato "AAAA-MM-DD HH:MM|Tipo|Nota"
 const COLS = ['nome', 'whatsapp', 'origem', 'entrada', 'etapa', 'ultimoContato', 'proximoPasso', 'dataProximo', 'obs', 'lembrete'];
 const DATAS = ['entrada', 'ultimoContato', 'dataProximo'];
@@ -137,6 +138,79 @@ function sincronizarFormulario() {
   } finally {
     lock.releaseLock();
   }
+  try { sincronizarCampanhas(); } catch (err) { console.error('campanhas: ' + err); }
+}
+
+/**
+ * Leads das abas "Campanha ..." (formulário instantâneo do Meta) → CRM, etapa "Inscrito live".
+ * Acha as colunas pelo cabeçalho; ignora leads de teste; se o telefone já está no CRM, só anota na observação.
+ */
+function sincronizarCampanhas() {
+  const props = PropertiesService.getScriptProperties();
+  const ss = SpreadsheetApp.getActive();
+  const tel = function (v) { return String(v || '').replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '').slice(-11); };
+  const limpa = function (v) { return String(v || '').replace(/_/g, ' ').replace(/\.$/, '').trim(); };
+  ss.getSheets().forEach(function (aba) {
+    const nomeAba = aba.getName();
+    if (nomeAba.indexOf(PREFIXO_CAMPANHA) !== 0) return;
+    const chave = 'ULTIMA_CAMPANHA_' + aba.getSheetId();
+    const ultima = Number(props.getProperty(chave) || 1);
+    const fim = aba.getLastRow();
+    if (fim <= ultima) return;
+    const largura = aba.getLastColumn();
+    const cab = aba.getRange(1, 1, 1, largura).getValues()[0].map(function (h) { return String(h).toLowerCase(); });
+    const col = function (re) { for (let i = 0; i < cab.length; i++) if (re.test(cab[i])) return i; return -1; };
+    const cNome = col(/full_name|nome/), cTel = col(/phone|telefone|whatsapp/), cData = col(/created_time/),
+          cOpera = col(/opera/), cMercado = col(/mercado/), cPlat = col(/^platform$/);
+    if (cNome < 0 || cTel < 0) return;
+    const origem = nomeAba.slice(PREFIXO_CAMPANHA.length).trim() || 'Meta';
+    const lock = LockService.getScriptLock();
+    lock.waitLock(15000);
+    try {
+      const sh = aba_();
+      const n = Math.max(sh.getLastRow() - 1, 1);
+      const telsCrm = sh.getRange(2, 2, n, 1).getValues();
+      const existentes = {};
+      telsCrm.forEach(function (r, i) { const t = tel(r[0]); if (t) existentes[t] = i + 2; });
+      aba.getRange(ultima + 1, 1, fim - ultima, largura).getValues().forEach(function (r) {
+        const linhaTxt = r.join(' ');
+        if (/test lead|dummy data/i.test(linhaTxt)) return;
+        const nome = String(r[cNome]).trim(), t = tel(r[cTel]);
+        if (!nome) return;
+        const quando = cData >= 0 ? new Date(r[cData]) : new Date();
+        const ok = !isNaN(quando);
+        const partes = [];
+        partes.push('Formulário Meta' + (cPlat >= 0 && r[cPlat] ? ' (' + r[cPlat] + ')' : '') +
+                    (ok ? ' em ' + Utilities.formatDate(quando, TZ, "dd/MM 'às' HH'h'mm") : ''));
+        if (cOpera >= 0 && r[cOpera]) partes.push('Já opera? ' + limpa(r[cOpera]));
+        if (cMercado >= 0 && r[cMercado]) partes.push('Interesse: ' + limpa(r[cMercado]));
+        const nota = origem + ': ' + partes.join('. ') + '.';
+        if (t && existentes[t]) {
+          const celObs = sh.getRange(existentes[t], COLS.indexOf('obs') + 1);
+          celObs.setValue((String(celObs.getValue()).trim() + ' ' + nota).trim());
+          return;
+        }
+        const res = adicionar_({
+          nome: nome, whatsapp: t, origem: origem, etapa: 'Inscrito live',
+          entrada: ok ? Utilities.formatDate(quando, TZ, 'yyyy-MM-dd') : '',
+          proximoPasso: 'Mandar boas-vindas (link da live + comunidade) e perguntar a cidade',
+          dataProximo: Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd'),
+          obs: partes.join('. ') + '.'
+        });
+        if (t && res.ok) existentes[t] = res.row;
+      });
+      props.setProperty(chave, String(fim));
+    } finally {
+      lock.releaseLock();
+    }
+  });
+}
+
+/** Lista suspensa da coluna Etapa (E) com todas as ETAPAS. */
+function atualizarListaEtapas() {
+  const sh = aba_();
+  const regra = SpreadsheetApp.newDataValidation().requireValueInList(ETAPAS, true).setAllowInvalid(false).build();
+  sh.getRange(2, COLS.indexOf('etapa') + 1, sh.getMaxRows() - 1, 1).setDataValidation(regra);
 }
 
 /** O formulário grava o horário em UTC como se fosse horário local; aqui viramos o instante certo. */

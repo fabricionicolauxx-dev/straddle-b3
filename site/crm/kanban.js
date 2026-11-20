@@ -2,7 +2,7 @@
 (function(){
 const API = (window.CRMK||{}).api;
 const TOKEN = (window.CRMK||{}).token;
-const STAGES=[["Novo","--s-novo"],["Contatado","--s-contatado"],["Respondeu","--s-respondeu"],["Chamada marcada","--s-chamada"],
+const STAGES=[["Novo","--s-novo"],["Inscrito live","--s-live"],["Contatado","--s-contatado"],["Respondeu","--s-respondeu"],["Chamada marcada","--s-chamada"],
  ["Proposta enviada","--s-proposta"],["Quase fechando","--s-quase"],["Em pausa","--s-pausa"],["Fechou","--s-fechou"],["Perdido","--s-perdido"]];
 const ORIGENS=["Google","Aluno Wall","YouTube","Discord","Indicação","Outro"];
 const TIPOS=["Chamar no WhatsApp","Ligar","Reunião","Follow-up"];
